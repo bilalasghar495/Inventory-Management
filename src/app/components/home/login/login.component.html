@@ -1,0 +1,41 @@
+<div class="login-wrapper">
+    <div class="login-left">
+        <img class="login-left-image" src="assets/images/login-background.png" alt="Inventory Logo" />
+    </div>
+  
+    <div class="login-right">
+      <div class="login-box">
+        <div class="logo">
+          <img src="/assets/images/logo.png" alt="Inventory Logo" />
+          <!-- <h2>Inventory</h2> -->
+        </div>
+  
+        <h3 class="welcome-text">Welcome</h3>
+        <p class="subtitle">Please login here</p>
+  
+        <form>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="you@example.com" />
+          </div>
+  
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-field">
+              <input type="password" id="password" placeholder="Enter password" />
+              <!-- <button type="button" class="toggle-password">👁️</button> -->
+            </div>
+          </div>
+  
+          <div class="options">
+            <label class="remember-me">
+              <input type="checkbox" /> Remember Me
+            </label>
+            <a class="forgot-link" routerLink="/forgot-password">Forgot Password?</a>
+          </div>
+  
+          <button type="submit" class="login-btn" routerLink="/reorder-product">Login</button>
+        </form>
+      </div>
+    </div>
+</div>

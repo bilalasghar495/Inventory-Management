@@ -1,0 +1,260 @@
+.inventory-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+// Header Section
+.header-section {
+  margin-bottom: 30px;
+  
+  .title-section {
+    .main-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 0 0 5px 0;
+      line-height: 1.2;
+    }
+    
+    .subtitle {
+      font-size: 1rem;
+      color: #6c757d;
+      margin: 0;
+      font-weight: 400;
+    }
+  }
+}
+
+// Main Content Card
+.content-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
+// Search and Actions Section
+.search-actions-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.search-container {
+  flex: 1;
+  min-width: 300px;
+  
+  .search-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+    
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+      font-size: 16px;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 15px 12px 45px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      }
+      
+      &::placeholder {
+        color: #6c757d;
+      }
+    }
+  }
+}
+
+.actions-container {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &.package-btn {
+      background: #f8f9fa;
+      color: #495057;
+      border: 2px solid #e9ecef;
+      
+      &:hover {
+        background: #e9ecef;
+      }
+    }
+    
+    &.add-item-btn {
+      background: #007bff;
+      color: white;
+      
+      &:hover {
+        background: #0056b3;
+        transform: translateY(-1px);
+      }
+    }
+    
+    &.filter-btn {
+      background: white;
+      color: #495057;
+      border: 2px solid #e9ecef;
+      
+      &:hover {
+        background: #f8f9fa;
+      }
+    }
+  }
+}
+
+// Table Section
+.table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.inventory-table {
+  width: 100%;
+  background: white;
+  
+  thead {
+    
+    th {
+      padding: 5px;
+      text-align: left;
+      font-weight: 600;
+      color: #495057;
+      font-size: 14px;
+      
+      &.current-stock {
+        padding-left: 50px;
+      }
+    }
+  }
+  
+  tbody {
+    .table-row {
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background: #f8f9fa;
+      }
+      
+      &:nth-child(even) {
+        background: #fafbfc;
+        
+        &:hover {
+          background: #f1f3f4;
+        }
+      }
+      
+      td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 14px;
+        color: #495057;
+        
+        &.item-name {
+          font-weight: 500;
+          color: #2c3e50;
+        }
+        
+        &.image-column {
+          .product-image {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+          }
+        }
+        
+        &.account-column {
+          .account-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            
+            &.status-activated {
+              background: #d4edda;
+              color: #155724;
+            }
+            
+            &.status-pending {
+              background: #fff3cd;
+              color: #856404;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media ( max-width: 768px ) {
+  .inventory-container {
+    padding: 15px;
+  }
+  
+  .content-card {
+    padding: 20px;
+  }
+  
+  .search-actions-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-container {
+    min-width: auto;
+    
+    .search-input-wrapper {
+      max-width: none;
+    }
+  }
+  
+  .actions-container {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .inventory-table {
+    font-size: 12px;
+    
+    th, td {
+      padding: 10px 8px;
+    }
+  }
+}
