@@ -13,7 +13,7 @@ export class SignupService {
   // API URLS
   readonly API_URLS = {
     SIGNUP: `${this.baseApiUrl}/signup`,
-    LOGIN: `https://0b77af699f55.ngrok-free.app/login`
+    LOGIN: `${this.baseApiUrl}/login`
   };
 
 
