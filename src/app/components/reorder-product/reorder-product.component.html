@@ -19,26 +19,27 @@
       </div>
       
       <div class="actions-container">
-        <!-- <form class="max-w-sm mx-auto">
-            <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option selected>Select Status</option>
-              <option value="US">Active</option>
-              <option value="CA">Inactive</option>
-              <option value="FR">Out of Stock</option>
-              <option value="DE">Low Stock</option>
-            </select>
-          </form> -->
-        <button type="button" class="py-1.5 px-5 text-sm font-medium text-gray-700 bg-gray rounded-2xl hover:bg-gray-200 hover:text-black">
-            Status
+
+        <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
+          <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"/>
+          </svg>
+          Filter
         </button>
           
-        <button type="button" class="py-1.5 px-5 text-sm font-medium text-gray-700 bg-gray rounded-2xl hover:bg-gray-200 hover:text-black">
-            Sort
-          </button>
+        <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
+          <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.335 6.514 6.91 1.464a1.122 1.122 0 0 0-1.818 0l-3.426 5.05a.988.988 0 0 0 .91 1.511h6.851a.988.988 0 0 0 .91-1.511Zm-8.67 6.972 3.426 5.05a1.121 1.121 0 0 0 1.818 0l3.426-5.05a.988.988 0 0 0-.909-1.511H2.574a.987.987 0 0 0-.909 1.511Z"/>
+          </svg>
+          Sort
+        </button>
 
-        <button type="button" class="py-1.5 px-5 text-sm font-medium text-gray-700 bg-gray rounded-2xl hover:bg-gray-200 hover:text-black">
-            Export
-          </button>
+      <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
+        <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3"/>
+        </svg>
+        Export
+      </button>
 
       </div>
     </div>
@@ -68,26 +69,36 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let product of products; let i = index" class="table-row">
+          <tr *ngFor="let product of paginatedProducts(); let i = index" class="table-row">
               <td class="image-column">
-                <img [src]="product.image.src || 'assets/default-product.png'" 
-                     [alt]="product.image.alt || product.title"
+                <img [src]="product.image" 
+                     [alt]="product.title"
                      class="product-image">
               </td>
             <td class="item-name">{{ product.title }}</td>
-            <td class="qty-column">{{product.variants[0].inventory_quantity}}</td>
-            <td class="available-column">{{ product.variants[0].old_inventory_quantity }}</td>
+            <td class="qty-column">{{ product.inventoryQuantity }}</td>
+            <td class="available-column">{{ product.oldInventoryQuantity }}</td>
             <td class="on-hand-column">{{ 0 }}</td>
-            <td class="Remaining-column">{{0}}</td>
-            <td class="Reorder-column">{{0}}</td>
+            <td class="Remaining-column">{{ 0 }}</td>
+            <td class="Reorder-column">{{ 0 }}</td>
             <td class="account-column">
               <span class="account-status">
-               Active
+               {{ product.status }}
               </span>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- Pagination Section -->
+    <app-pagination
+      [currentPage]        = "currentPage()"
+      [itemsPerPage]       = "itemsPerPage()"
+      [totalItems]         = "totalItems()"
+      (pageChange)         = "onPageChange($event)"
+      (itemsPerPageChange) = "onItemsPerPageChange($event)"
+      >
+    </app-pagination>
   </div>
 </div>

@@ -1,7 +1,5 @@
 <div class="login-wrapper">
-    <div class="login-left">
-        <img class="login-left-image" src="assets/images/login-background.png" alt="Inventory Logo" />
-    </div>
+    <app-image-panel></app-image-panel>
   
     <div class="login-right">
       <div class="login-box">
@@ -13,17 +11,23 @@
         <h3 class="welcome-text">Welcome</h3>
         <p class="subtitle">Please login here</p>
   
-        <form>
+        <form [formGroup]="form" (ngSubmit)="onFormSubmit()">
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" placeholder="you@example.com" />
+            <input type="email" id="email" placeholder="you@example.com" formControlName="email" />
+            <div *ngIf="fc_email.invalid && (fc_email.dirty || fc_email.touched)" class="error-message">
+              <small *ngIf="fc_email.errors?.['required']">Email is required</small>
+              <small *ngIf="fc_email.errors?.['email']">Please enter a valid email</small>
+            </div>
           </div>
   
           <div class="form-group">
             <label for="password">Password</label>
             <div class="password-field">
-              <input type="password" id="password" placeholder="Enter password" />
-              <!-- <button type="button" class="toggle-password">👁️</button> -->
+              <input type="password" id="password" placeholder="Enter password" formControlName="password" />
+            </div>
+            <div *ngIf="fc_password.invalid && (fc_password.dirty || fc_password.touched)" class="error-message">
+              <small *ngIf="fc_password.errors?.['required']">Password is required</small>
             </div>
           </div>
   
@@ -34,7 +38,8 @@
             <a class="forgot-link" routerLink="/forgot-password">Forgot Password?</a>
           </div>
   
-          <button type="submit" class="login-btn" routerLink="/reorder-product">Login</button>
+          <button type="submit" class="login-btn" [disabled]="form.invalid">Login</button>
+          <p class="text-center text-sm text-gray-500 mt-2">Don't have an account? <a routerLink="/signup" class="text-blue-500 hover:text-blue-700">Sign up</a></p>
         </form>
       </div>
     </div>

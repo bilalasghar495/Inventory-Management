@@ -1,5 +1,5 @@
 /* === Layout === */
-.login-wrapper {
+.signup-wrapper {
     display: flex;
     height: 100vh;
     width: 100%;
@@ -7,14 +7,14 @@
     font-family: "Inter", sans-serif;
   }
   
-  .login-right {
+  .signup-right {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   
-  .login-box {
+  .signup-box {
     width: 500px;
     background: #ffffff;
     padding: 40px 36px;
@@ -59,6 +59,7 @@
     margin-bottom: 6px;
   }
   
+  input[type="name"],
   input[type="email"],
   input[type="password"] {
     width: 100%;
@@ -74,7 +75,6 @@
     border-color: #3b82f6;
   }
   
-  /* Password field */
   .password-field {
     position: relative;
   }
@@ -90,39 +90,17 @@
   }
   
   /* Options */
-  .options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    font-size: 14px;
-  }
-  
-  .remember-me input {
-    accent-color: #3b82f6;
-  }
-  
-  .forgot-link {
-    color: #3b82f6;
-    text-decoration: none;
-  }
-  
-  .forgot-link:hover {
-    text-decoration: underline;
-  }
-  
-  /* Error Messages */
-  .error-message {
-    margin-top: 4px;
-  }
+//   .options {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     margin-bottom: 24px;
+//     font-size: 14px;
+//   }
 
-  .error-message small {
-    color: #dc2626;
-    font-size: 12px;
-  }
-
+  
   /* Button */
-  .login-btn {
+  .signup-btn {
     width: 100%;
     background-color: #2563eb;
     color: #fff;
@@ -135,35 +113,26 @@
     transition: background-color 0.2s ease;
   }
   
-  .login-btn:hover {
+  .signup-btn:hover {
     background-color: #1e40af;
-  }
-
-  .login-btn:disabled {
-    background-color: #9ca3af;
-    cursor: not-allowed;
-  }
-
-  .login-btn:disabled:hover {
-    background-color: #9ca3af;
   }
   
   /* === Responsive === */
   @media (max-width: 900px) {
-    .login-wrapper {
+    .signup-wrapper {
       flex-direction: column;
     }
   
-    .login-left {
+    .signup-left {
       display: none;
     }
   
-    .login-right {
+    .signup-right {
       flex: none;
       height: 100vh;
     }
   
-    .login-box {
+    .signup-box {
       width: 90%;
       max-width: 380px;
     }

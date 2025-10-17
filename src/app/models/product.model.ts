@@ -1,22 +1,43 @@
+// Flattened Model for Display (used in component)
 export interface IProductDetailModel {
-    id        : number;
-    title     : string;
-    status    : string;
-    image     : IProductImageModel;
-    created_at: string;
-    variants  : IProductVariantModel[];
+    id               : number;
+    title            : string;
+    productType      : string;
+    status           : string;
+    image            : string;
+    variantTitle     : string;
+    price            : string;
+    sku              : string | null;
+    inventoryQuantity: number;
+    oldInventoryQuantity: number;
 }
 
-export interface IProductImageModel {
-    src       : string;
-    alt       : string | null;
-    created_at: string;
+// API Response Model (from backend)
+export interface IProductApiResponse {
+    id         : number;
+    title      : string;
+    productType: string;
+    status     : string;
+    imageUrl   : string;
+    variants   : IProductVariantModel[];
+    options    : IProductOptionModel[];
 }
 
 export interface IProductVariantModel {
-    inventory_quantity    : number;
-    old_inventory_quantity: number;
-    price                 : string;
-    sku                   : string | null;
+    id                   : number;
+    productId            : number;
+    imageSrc?            : string;
+    title                : string;
+    price                : string;
+    sku                  : string | null;
+    inventoryQuantity    : number;
+    oldInventoryQuantity : number;
+}
+
+export interface IProductOptionModel {
+    id        : number;
+    productId : number;
+    name      : string;
+    values    : string[];
 }
 

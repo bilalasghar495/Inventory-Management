@@ -1,5 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+
+// Services
 import { ProductDataService } from '../../Services/product-data.service';
+
+// Models
 import { IProductDetailModel } from '../../models/product.model';
 
 @Component({
@@ -9,90 +13,59 @@ import { IProductDetailModel } from '../../models/product.model';
 })
 export class ReorderProductComponent implements OnInit {
   readonly productDataService = inject( ProductDataService );
-  readonly productId = [];
-  products: IProductDetailModel[] = [];
-  filteredProducts: IProductDetailModel[] = [];
+
+  readonly products           = signal<IProductDetailModel[]>([]);
+  readonly filteredProducts   = signal<IProductDetailModel[]>([]);
+  
+  // Pagination properties (as signals)
+  readonly currentPage  = signal<number>(1);
+  readonly itemsPerPage = signal<number>(10);
+  readonly totalItems   = signal<number>(0);
+  
+  readonly paginatedProducts = computed(() => {
+    const start = ( this.currentPage() - 1 ) * this.itemsPerPage();
+    const end = start + this.itemsPerPage();
+    return this.products().slice(start, end);
+  });
+
   searchTerm: string = '';
-
-  // productList = [
-  //   {
-  //     title: 'Product 1',
-  //     variants: [{ inventory_quantity: 50 }],
-  //     image: { src: 'assets/product1.png', alt: 'Product 1' },
-  //     available: 30,
-  //     on_hand: 20,
-  //     type: 'Electronics',
-  //     store: 'Store 1',
-  //     amount: 100,
-  //     project: 'Project A',
-  //     status: 'Active'
-  //   },
-  //   {
-  //     title: 'Product 2',
-  //     variants: [{ inventory_quantity: 75 }],
-  //     image: { src: 'assets/product2.png', alt: 'Product 2' },
-  //     available: 50,
-  //     on_hand: 25,
-  //     type: 'Furniture',
-  //     store: 'Store 2',
-  //     amount: 200,
-  //     project: 'Project B',
-  //     status: 'Inactive'
-  //   },
-  //   {
-  //     title: 'Product 3',
-  //     variants: [{ inventory_quantity: 120 }],
-  //     image: { src: 'assets/product3.png', alt: 'Product 3' },
-  //     available: 80,
-  //     on_hand: 40,
-  //     type: 'Clothing',
-  //     store: 'Store 3',
-  //     amount: 150,
-  //     project: 'Project C',
-  //     status: 'Out of Stock'
-  //   },
-  //   {
-  //     title: 'Product 4',
-  //     variants: [{ inventory_quantity: 60 }],
-  //     image: { src: 'assets/product4.png', alt: 'Product 4' },
-  //     available: 45,
-  //     on_hand: 15,
-  //     type: 'Accessories',
-  //     store: 'Store 4',
-  //     amount: 50,
-  //     project: 'Project D',
-  //     status: 'Low Stock'
-  //   }
-  // ];
-
+  
 
   constructor() { }
+
 
   ngOnInit(): void {
     this.fetchProductDetail();
   }
 
+
   // Fetch product detail
   private fetchProductDetail(): void {
     this.productDataService.getProducts().subscribe({
       next: ( data: IProductDetailModel[] ) => {
-        this.products = data;
+        this.products.set(data);
+        this.totalItems.set( data.length );
         console.log( data );
       },
       error: (error: any) => {
-        this.showError(error.message);
+        this.showError( error.message );
       },
     });
   }
 
 
-  getProductType(product: IProductDetailModel): string {
-    // Return a type based on product status or use default
-    return product.status === 'active' ? 'IE Project Items' : 'Standard Items';
+  onPageChange( page: number ): void {
+    this.currentPage.set( page );
   }
 
 
-  private showError(message: string): void {
+  onItemsPerPageChange( itemsPerPage: number ): void {
+    this.itemsPerPage.set( itemsPerPage );
+    this.currentPage.set(1);
+  }
+
+
+  private showError( message: string ): void {
     console.error('Error:', message);
   }
 }
