@@ -1,104 +1,116 @@
-<div class="inventory-container">
-  <!-- Header Section -->
-  <div class="bg-blue-500 text-black p-4 rounded-lg shadow-md">
-    <h1 class="text-2xl font-bold mb-2">Inventory-Item</h1>
-    <p class="text-sm opacity-90">Items detail Information</p>
-  </div>
-
-  <!-- Main Content Card -->
-  <div class="bg-black-500 text-white p-4 rounded-lg shadow-md">
-    <!-- Search and Actions Section -->
-    <div class="search-actions-section">
-      <div class="search-container">
-        <div class="search-input-wrapper">
-          <input 
-            type="text" 
-            class="search-input bg-white text-black p-2" 
-            placeholder="Search Item">
-        </div>
-      </div>
-      
-      <div class="actions-container">
-
-        <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
-          <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"/>
-          </svg>
-          Filter
-        </button>
+<div class="content-card">
+        <div class="search-actions-section">
+          <div class="search-container">
+            <div class="search-input-wrapper">
+              <input 
+                type="text" 
+                class="search-input bg-white text-black p-2" 
+                placeholder="Search Item">
+            </div>
+          </div>
           
-        <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
-          <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 20">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.335 6.514 6.91 1.464a1.122 1.122 0 0 0-1.818 0l-3.426 5.05a.988.988 0 0 0 .91 1.511h6.851a.988.988 0 0 0 .91-1.511Zm-8.67 6.972 3.426 5.05a1.121 1.121 0 0 0 1.818 0l3.426-5.05a.988.988 0 0 0-.909-1.511H2.574a.987.987 0 0 0-.909 1.511Z"/>
-          </svg>
-          Sort
-        </button>
+          <div class="actions-container">
 
-      <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
-        <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3"/>
-        </svg>
-        Export
-      </button>
 
-      </div>
-    </div>
+            <select
+            id="shortRange"
+            (change)="onShortRangeChange($any($event.target).value)"
+            class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors"
+            >              
+              <option value="" disabled>Select a period</option>
+              <option value="7" selected> per day sold 7 days</option>
+              <option value="1"> per day sold 1 days</option>
+              <option value="14"> per day sold 14 days</option>
+              <option value="30"> per day sold 30 days</option>
+            </select>
 
-    <!-- Table Section -->
-    <div class="table-container">
-      <table class="inventory-table">
-        <thead>
-          <tr>
-            <!-- <th class="checkbox-column">
-              <input type="checkbox" class="select-all-checkbox">
-            </th> -->
-            <th rowspan="2">ProductImage</th>
-            <th rowspan="2" class="sortable-column">
-              Product Name
-            </th>
-            <!-- <th rowspan="2">Variant Name</th> -->
-            <th class="current-stock" colspan="2">Current Stock</th>
-            <th rowspan="2">Incoming Stock</th>
-            <th rowspan="2">Remaining Stock</th>
-            <th rowspan="2">Reorder Qty</th>
-            <th rowspan="2">Urgency</th>
-          </tr>
-          <tr>
-            <th>Available</th>
-            <th>Onhand</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let product of paginatedProducts(); let i = index" class="table-row">
-              <td class="image-column">
-                <img [src]="product.image" 
-                     [alt]="product.title"
-                     class="product-image">
+            <select 
+            id="longRange"
+            (change)="onLongRangeChange($any($event.target).value)"
+            class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors"
+            >
+              <option value="" disabled>Select a period</option>
+              <option value="7"> per day sold 7 days</option>
+              <option value="14"> per day sold 14 days</option>
+              <option value="30" selected> per day sold 30 days</option>
+            </select>
+
+            <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
+              <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"/>
+              </svg>
+              Filter
+            </button>
+              
+            <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
+              <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.335 6.514 6.91 1.464a1.122 1.122 0 0 0-1.818 0l-3.426 5.05a.988.988 0 0 0 .91 1.511h6.851a.988.988 0 0 0 .91-1.511Zm-8.67 6.972 3.426 5.05a1.121 1.121 0 0 0 1.818 0l3.426-5.05a.988.988 0 0 0-.909-1.511H2.574a.987.987 0 0 0-.909 1.511Z"/>
+              </svg>
+              Sort
+            </button>
+
+          <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
+            <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3"/>
+            </svg>
+            Export
+          </button>
+
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="inventory-table">
+            <thead>
+              <tr>
+                <!-- <th class="checkbox-column">
+                  <input type="checkbox" class="select-all-checkbox">
+                </th> -->
+                <th>ProductImage</th>
+                <th rowspan="2" class="sortable-column">
+                  Product Name
+                </th>
+                <!-- <th rowspan="2">Variant Name</th> -->
+                <th>Available Stock</th>
+                <th>Incoming Stock</th>
+                <th>Sold / {{ shortRange() }} days</th>
+                <th>Suggested Reorder Qty / {{ shortRange() }} days</th>
+                <th>Sold / {{ longRange() }} days</th>
+                <th>Suggested Reorder Qty / {{ longRange() }} days</th>
+                <th>Suggested Reorder Qty / Average</th>
+                <th>Urgency</th>
+              </tr>
+            <tbody>
+              <tr *ngFor="let product of paginatedProducts(); let i = index" class="table-row">
+                <td class="image-column">
+                  <img [src]="product.productImage" 
+                      [alt]="product.productName"
+                      class="product-image">
+                </td>
+              <td>{{ product.productName }}</td>
+              <td>{{ product.availableStock }}</td>
+              <td>{{ product.incomingStock }}</td>
+              <td>{{ product.shortRangeSales }}</td>
+              <td>{{ product.recommendedRestockShortRange }}</td>
+              <td>{{ product.longRangeSales }}</td>
+              <td>{{ product.recommendedRestockLongRange }}</td>
+              <td>{{ product.recommendedAverageStock }}</td>
+              <td>
+                <!-- <span [class]="'urgency-' + product.urgencyLevel?.toLowerCase()">
+                {{ product.urgencyLevel }}
+                </span> -->
               </td>
-            <td class="item-name">{{ product.title }}</td>
-            <td class="qty-column">{{ product.inventoryQuantity }}</td>
-            <td class="available-column">{{ product.oldInventoryQuantity }}</td>
-            <td class="on-hand-column">{{ 0 }}</td>
-            <td class="Remaining-column">{{ 0 }}</td>
-            <td class="Reorder-column">{{ 0 }}</td>
-            <td class="account-column">
-              <span class="account-status">
-               {{ product.status }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            </tr>
+            </tbody>
+          </table>
+        </div>
 
-    <!-- Pagination Section -->
-    <app-pagination
-      [currentPage]        = "currentPage()"
-      [itemsPerPage]       = "itemsPerPage()"
-      [totalItems]         = "totalItems()"
-      (pageChange)         = "onPageChange($event)"
-      (itemsPerPageChange) = "onItemsPerPageChange($event)"
-      >
-    </app-pagination>
-  </div>
+        <app-pagination
+          [currentPage]        = "currentPage()"
+          [itemsPerPage]       = "itemsPerPage()"
+          [totalItems]         = "totalItems()"
+          (pageChange)         = "onPageChange($event)"
+          (itemsPerPageChange) = "onItemsPerPageChange($event)"
+          >
+        </app-pagination>
 </div>

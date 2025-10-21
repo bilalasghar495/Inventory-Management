@@ -11,8 +11,12 @@ import { MatCardModule } from '@angular/material/card';
 import { LoginComponent } from './components/home/login/login.component';
 import { ForgotPasswordComponent } from './components/home/forgot-password/forgot-password.component';
 import { PaginationComponent } from './shared/components/pagination/pagination.component';
-import { SignupComponent } from './components/home/signup/signup.component';
+import { SignupComponent } from './components/signup/signup.component';
 import { ImagePanelComponent } from './shared/components/image-panel/image-panel.component';
+import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MainLayoutComponent } from './components/main-layout/main-layout.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +26,11 @@ import { ImagePanelComponent } from './shared/components/image-panel/image-panel
     ForgotPasswordComponent,
     PaginationComponent,
     SignupComponent,
-    ImagePanelComponent
+    ImagePanelComponent,
+    SidebarComponent,
+    HeaderComponent,
+    DashboardComponent,
+    MainLayoutComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,43 +1,51 @@
 // Flattened Model for Display (used in component)
 export interface IProductDetailModel {
-    id               : number;
-    title            : string;
-    productType      : string;
-    status           : string;
-    image            : string;
-    variantTitle     : string;
-    price            : string;
-    sku              : string | null;
-    inventoryQuantity: number;
-    oldInventoryQuantity: number;
+    // Basic product info
+    productId        : string;
+    productName      : string;
+    productImage     : string;
+    variantId        : number;
+    variantName      : string;
+    
+    // Inventory management fields
+    availableStock   : number;
+    totalInventory   : number;
+    incomingStock    : number;
+    
+    // Sales data
+    shortRangeSales  : number;
+    longRangeSales   : number;
+    perDaySoldShortRange: number;
+    perDaySoldLongRange : number;
+    
+    // Reorder recommendations
+    recommendedAverageStock     : number;
+    recommendedRestockShortRange: number;
+    recommendedRestockLongRange : number;
 }
 
-// API Response Model (from backend)
+// API Response Model (from backend) - matches the actual restock prediction API
 export interface IProductApiResponse {
-    id         : number;
-    title      : string;
-    productType: string;
-    status     : string;
-    imageUrl   : string;
-    variants   : IProductVariantModel[];
-    options    : IProductOptionModel[];
+    // Basic product info
+    productId        : string;
+    productName      : string;
+    productImage     : string;
+    variantId        : number;
+    variantName      : string;
+    
+    // Inventory management fields
+    availableStock   : number;
+    totalInventory   : number;
+    incomingStock    : number;
+    
+    // Sales data
+    shortRangeSales  : number;
+    longRangeSales   : number;
+    perDaySoldShortRange: number;
+    perDaySoldLongRange : number;
+    
+    // Reorder recommendations
+    recommendedAverageStock     : number;
+    recommendedRestockShortRange: number;
+    recommendedRestockLongRange : number;
 }
-
-export interface IProductVariantModel {
-    id                   : number;
-    productId            : number;
-    imageSrc?            : string;
-    title                : string;
-    price                : string;
-    sku                  : string | null;
-    inventoryQuantity    : number;
-    oldInventoryQuantity : number;
-}
-
-export interface IProductOptionModel {
-    id        : number;
-    productId : number;
-    name      : string;
-    values    : string[];
-}
-

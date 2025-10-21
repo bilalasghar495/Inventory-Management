@@ -21,6 +21,9 @@ export class ReorderProductComponent implements OnInit {
   readonly currentPage  = signal<number>(1);
   readonly itemsPerPage = signal<number>(10);
   readonly totalItems   = signal<number>(0);
+
+  shortRange = signal<number>(7);
+  longRange = signal<number>(30);
   
   readonly paginatedProducts = computed(() => {
     const start = ( this.currentPage() - 1 ) * this.itemsPerPage();
@@ -39,16 +42,30 @@ export class ReorderProductComponent implements OnInit {
   }
 
 
+  onShortRangeChange( value: string ): void {
+    this.shortRange.set(+value);
+    this.fetchProductDetail();
+  }
+  
+
+  onLongRangeChange(value: string): void {
+    this.longRange.set(+value);
+    this.fetchProductDetail();
+  }
+
+
   // Fetch product detail
   private fetchProductDetail(): void {
-    this.productDataService.getProducts().subscribe({
-      next: ( data: IProductDetailModel[] ) => {
+    const shortRangeDays = this.shortRange();
+    const longRangeDays = this.longRange();
+
+    this.productDataService.getProducts(shortRangeDays, longRangeDays).subscribe({
+      next: (data: IProductDetailModel[]) => {
         this.products.set(data);
-        this.totalItems.set( data.length );
-        console.log( data );
+        this.totalItems.set(data.length);
       },
       error: (error: any) => {
-        this.showError( error.message );
+        this.showError(error.message);
       },
     });
   }

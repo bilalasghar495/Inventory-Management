@@ -1,7 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { SignupService } from '../../../Services/sign-up-service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+// Services
+import { SignupService } from '../../../Services/sign-up-service';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +35,7 @@ export class LoginComponent {
       this.signupService.login(dataModel).subscribe({
         next: (response) => {
           console.log('Login successful', response);
-          this.router.navigate(['/reorder-product']);
+          this.router.navigate(['/main']);
         },
         error: (error) => {
           console.error('Login failed', error);

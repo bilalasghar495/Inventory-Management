@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+
+// Models
 import { IProductDetailModel, IProductApiResponse } from '../models/product.model';
+
+// Environment
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -13,7 +17,7 @@ export class ProductDataService {
   
   // API URLS
   readonly API_URLS = {
-    PRODUCTS: `${this.baseApiUrl}/products?store=testapplica.myshopify.com&limit=250`
+    PRODUCTS: `${this.baseApiUrl}/restock-prediction?store=testapplica.myshopify.com&limit=250`
   };
 
   private headers = new HttpHeaders({
@@ -24,40 +28,39 @@ export class ProductDataService {
   constructor( private http: HttpClient ) { }
 
 
-  getProducts(): Observable<IProductDetailModel[]> {
-    return this.http.get<IProductApiResponse[]>(this.API_URLS.PRODUCTS, { headers: this.headers }).pipe(
-      map( ( res: IProductApiResponse[] ) => {
-        if ( !Array.isArray(res) ) return [];
-
-        const ProductList: IProductDetailModel[] = [];
-
-        res.forEach( ( product ) => {
-          product.variants?.forEach( ( variant ) => {
-            // Use variant's imageSrc if available, otherwise fall back to product's imageUrl
-            const variantImage = variant.imageSrc || product.imageUrl;
-            
-            // Only append variant title if it's not "Default Title"
-            const productTitle = variant.title && variant.title !== 'Default Title' ? `${product.title} - ${variant.title}` : product.title;
-            
-            ProductList.push({
-              id: variant.id,
-              title: productTitle,
-              productType: product.productType,
-              status: product.status,
-              image: variantImage,
-              variantTitle: variant.title,
-              price: variant.price,
-              sku: variant.sku,
-              inventoryQuantity: variant.inventoryQuantity,
-              oldInventoryQuantity: variant.oldInventoryQuantity
-            });
-          });
+  getProducts( rangeDays1: number = 7, rangeDays2: number = 30 ): Observable<IProductDetailModel[]> {
+    const url = `${this.API_URLS.PRODUCTS}&rangeDays1=${rangeDays1}&rangeDays2=${rangeDays2}`;
+  
+    return this.http.get<IProductApiResponse[]>(url, { headers: this.headers }).pipe(
+      map((res: IProductApiResponse[]) => {
+        if (!Array.isArray(res)) return [];
+  
+        return res.map((product) => {
+          const displayName =
+            product.variantName && product.variantName !== 'Default Title'
+              ? `${product.productName} - ${product.variantName}`
+              : product.productName;
+  
+          return {
+            productId: product.productId,
+            productName: displayName,
+            productImage: product.productImage,
+            variantId: product.variantId,
+            variantName: product.variantName,
+            availableStock: product.availableStock,
+            totalInventory: product.totalInventory,
+            incomingStock: product.incomingStock,
+            shortRangeSales: product.shortRangeSales,
+            longRangeSales: product.longRangeSales,
+            perDaySoldShortRange: product.perDaySoldShortRange,
+            perDaySoldLongRange: product.perDaySoldLongRange,
+            recommendedAverageStock: product.recommendedAverageStock,
+            recommendedRestockShortRange: product.recommendedRestockShortRange,
+            recommendedRestockLongRange: product.recommendedRestockLongRange,
+          };
         });
-
-        return ProductList;
       })
     );
   }
-
-
+  
 }

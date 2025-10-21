@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, input, Input, output, Output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 
 export interface PaginationConfig {
   currentPage: number;
@@ -44,38 +44,38 @@ export class PaginationComponent {
 
   // Get start index for display
   get startIndex(): number {
-    if (this.totalItems() === 0) return 0;
-    return (this.currentPage() - 1) * this.itemsPerPage() + 1;
+    if ( this.totalItems() === 0 ) return 0;
+    return ( this.currentPage() - 1 ) * this.itemsPerPage() + 1;
   }
 
   // Get end index for display
   get endIndex(): number {
-    return Math.min(this.currentPage() * this.itemsPerPage(), this.totalItems());
+    return Math.min( this.currentPage() * this.itemsPerPage(), this.totalItems() );
   }
 
   // Go to specific page
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages() && page !== this.currentPage()) {
+  goToPage( page: number ): void {
+    if ( page >= 1 && page <= this.totalPages() && page !== this.currentPage() ) {
       this.pageChange.emit(page);
     }
   }
 
   // Go to previous page
   previousPage(): void {
-    if (this.currentPage() > 1) {
+    if (  this.currentPage() > 1 ) {
       this.pageChange.emit(this.currentPage() - 1);
     }
   }
 
   // Go to next page
   nextPage(): void {
-    if (this.currentPage() < this.totalPages()) {
+    if ( this.currentPage() < this.totalPages() ) {
       this.pageChange.emit(this.currentPage() + 1);
     }
   }
 
   // Change items per page
-  onItemsPerPageChange(event: Event): void {
+  onItemsPerPageChange( event: Event ): void {
     const target = event.target as HTMLSelectElement;
     const newSize = parseInt(target.value, 10);
     this.itemsPerPageChange.emit(newSize);

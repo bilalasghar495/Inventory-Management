@@ -1,39 +1,30 @@
-.inventory-container {
-  padding: 20px;
-  background-color: #f8f9fa;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+// Page Title Section
+.page-title-section {
+  margin-bottom: 24px;
 
-// Header Section
-.header-section {
-  margin-bottom: 30px;
-  
-  .title-section {
-    .main-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #2c3e50;
-      margin: 0 0 5px 0;
-      line-height: 1.2;
-    }
-    
-    .subtitle {
-      font-size: 1rem;
-      color: #6c757d;
-      margin: 0;
-      font-weight: 400;
-    }
+  .page-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+  }
+
+  .page-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 400;
   }
 }
 
-// Main Content Card
+// Content Card
 .content-card {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  margin-bottom: 20px;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 24px;
 }
 
 // Search and Actions Section
@@ -41,46 +32,47 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 20px;
 }
 
 .search-container {
   flex: 1;
-  min-width: 300px;
-  
+  min-width: 280px;
+
   .search-input-wrapper {
     position: relative;
-    display: inline-block;
     width: 100%;
     max-width: 400px;
-    
+
     .search-icon {
       position: absolute;
-      left: 15px;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
-      color: #6c757d;
-      font-size: 16px;
+      pointer-events: none;
     }
-    
+
     .search-input {
       width: 100%;
-      padding: 12px 15px 12px 45px;
-      border: 2px solid #e9ecef;
+      padding: 10px 16px 10px 44px;
+      border: 1px solid #e5e7eb;
       border-radius: 8px;
-      font-size: 16px;
-      transition: border-color 0.3s ease;
-      
+      font-size: 14px;
+      color: #1f2937;
+      background: #f9fafb;
+      transition: all 0.2s ease;
+
       &:focus {
         outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        border-color: #3b82f6;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
       }
-      
+
       &::placeholder {
-        color: #6c757d;
+        color: #9ca3af;
       }
     }
   }
@@ -88,48 +80,42 @@
 
 .actions-container {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   align-items: center;
-  
+
   .action-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 20px;
-    border: none;
+    padding: 10px 16px;
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
-    
-    &.package-btn {
-      background: #f8f9fa;
-      color: #495057;
-      border: 2px solid #e9ecef;
-      
-      &:hover {
-        background: #e9ecef;
-      }
+    transition: all 0.2s ease;
+    background: white;
+    color: #374151;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
     }
-    
+
+    &:hover {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+
     &.add-item-btn {
-      background: #007bff;
+      background: #3b82f6;
       color: white;
-      
+      border-color: #3b82f6;
+
       &:hover {
-        background: #0056b3;
-        transform: translateY(-1px);
-      }
-    }
-    
-    &.filter-btn {
-      background: white;
-      color: #495057;
-      border: 2px solid #e9ecef;
-      
-      &:hover {
-        background: #f8f9fa;
+        background: #2563eb;
+        border-color: #2563eb;
       }
     }
   }
@@ -138,123 +124,196 @@
 // Table Section
 .table-container {
   overflow-x: auto;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 20px;
 }
 
 .inventory-table {
   width: 100%;
   background: white;
-  
+  border-collapse: collapse;
+
   thead {
-    
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+
     th {
-      padding: 5px;
+      padding: 12px 16px;
       text-align: left;
       font-weight: 600;
-      color: #495057;
-      font-size: 14px;
-      
-      &.current-stock {
-        padding-left: 50px;
+      color: #6b7280;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+
+      &.checkbox-column {
+        width: 48px;
+        text-align: center;
       }
     }
   }
-  
+
   tbody {
     .table-row {
-      transition: background-color 0.2s ease;
-      
+      transition: background-color 0.15s ease;
+      border-bottom: 1px solid #f3f4f6;
+
       &:hover {
-        background: #f8f9fa;
+        background: #f9fafb;
       }
-      
-      &:nth-child(even) {
-        background: #fafbfc;
-        
-        &:hover {
-          background: #f1f3f4;
-        }
+
+      &:last-child {
+        border-bottom: none;
       }
-      
+
       td {
-        padding: 15px 12px;
-        border-bottom: 1px solid #e9ecef;
+        padding: 16px;
         font-size: 14px;
-        color: #495057;
-        
+        color: #374151;
+
+        &.checkbox-column {
+          text-align: center;
+        }
+
         &.item-name {
           font-weight: 500;
-          color: #2c3e50;
+          color: #1f2937;
         }
-        
+
         &.image-column {
           .product-image {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
           }
         }
-        
+
         &.account-column {
           .account-status {
+            display: inline-block;
             padding: 4px 12px;
-            border-radius: 20px;
+            border-radius: 12px;
             font-size: 12px;
             font-weight: 500;
-            text-transform: uppercase;
-            
-            &.status-activated {
-              background: #d4edda;
-              color: #155724;
+
+            &.urgency-activated {
+              background: #d1fae5;
+              color: #065f46;
             }
-            
-            &.status-pending {
-              background: #fff3cd;
-              color: #856404;
+
+            &.urgency-critical {
+              background: #fee2e2;
+              color: #991b1b;
+            }
+
+            &.urgency-high {
+              background: #fef3c7;
+              color: #92400e;
+            }
+
+            &.urgency-medium {
+              background: #dbeafe;
+              color: #1e40af;
+            }
+
+            &.urgency-low {
+              background: #d1fae5;
+              color: #065f46;
+            }
+
+            &.urgency-need {
+              background: #fef3c7;
+              color: #92400e;
             }
           }
         }
       }
+    }
+  }
+
+  .table-checkbox {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+
+    &:checked {
+      background-color: #3b82f6;
+      border-color: #3b82f6;
     }
   }
 }
 
-// Responsive design
-@media ( max-width: 768px ) {
-  .inventory-container {
-    padding: 15px;
+// Responsive Design
+@media (max-width: 1024px) {
+  .page-content {
+    padding: 20px 24px;
   }
-  
-  .content-card {
-    padding: 20px;
-  }
-  
+
   .search-actions-section {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .search-container {
     min-width: auto;
-    
+
     .search-input-wrapper {
       max-width: none;
     }
   }
-  
+
   .actions-container {
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
-  
+}
+
+@media (max-width: 768px) {
+  .page-content {
+    padding: 16px;
+  }
+
+  .content-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .page-title-section {
+    .page-title {
+      font-size: 24px;
+    }
+  }
+
   .inventory-table {
-    font-size: 12px;
-    
-    th, td {
-      padding: 10px 8px;
+    font-size: 13px;
+
+    thead th {
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+
+    tbody td {
+      padding: 12px;
+    }
+
+    .product-image {
+      width: 40px !important;
+      height: 40px !important;
+    }
+  }
+
+  .action-btn {
+    font-size: 13px;
+    padding: 8px 12px !important;
+
+    svg {
+      width: 16px !important;
+      height: 16px !important;
     }
   }
 }

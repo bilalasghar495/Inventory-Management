@@ -1,9 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
+// Components
 import { ReorderProductComponent } from './components/reorder-product/reorder-product.component';
 import { ForgotPasswordComponent } from './components/home/forgot-password/forgot-password.component';
-import { SignupComponent } from './components/home/signup/signup.component';
+import { SignupComponent } from './components/signup/signup.component';
 import { LoginComponent } from './components/home/login/login.component';
+import { MainLayoutComponent } from './components/main-layout/main-layout.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 const routes: Routes = [
   {
@@ -19,8 +23,23 @@ const routes: Routes = [
     component: ForgotPasswordComponent
   },
   {
-    path: 'reorder-product',
-    component: ReorderProductComponent
+    path: 'main',
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent
+      },
+      {
+        path: 'items',
+        component: ReorderProductComponent
+      }
+    ]
   }
 ];
 
