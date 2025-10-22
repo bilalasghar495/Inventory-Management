@@ -92,52 +92,9 @@
       }
     }
 
-    // Profile Section
+    // Profile Section - Tailwind Dropdown
     .profile-section {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      padding: 6px 12px 6px 6px;
-      border-radius: 12px;
-      transition: background 0.2s ease;
-
-      &:hover {
-        background: #F9FAFB;
-      }
-
-      .profile-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #E5E7EB;
-      }
-
-      .profile-info {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-
-        .profile-name {
-          font-size: 14px;
-          font-weight: 600;
-          color: #111827;
-          line-height: 1.2;
-        }
-
-        .profile-role {
-          font-size: 12px;
-          color: #6B7280;
-          line-height: 1.2;
-        }
-      }
-
-      .dropdown-arrow {
-        width: 16px;
-        height: 16px;
-        margin-left: 4px;
-      }
+      // All styles are handled by Tailwind classes in the template
     }
   }
 }

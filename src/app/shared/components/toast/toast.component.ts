@@ -11,6 +11,8 @@ import { Subscription } from 'rxjs';
 export class ToastComponent implements OnInit, OnDestroy {
   readonly toastService = inject(ToastService);
   
+  readonly ToastTypeEnum = ToastTypeEnum;
+  
   toasts: Toast[] = [];
   private subscription!: Subscription;
 

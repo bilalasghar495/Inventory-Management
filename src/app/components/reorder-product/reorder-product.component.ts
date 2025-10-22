@@ -16,6 +16,7 @@ export class ReorderProductComponent implements OnInit {
 
   readonly products           = signal<IProductDetailModel[]>([]);
   readonly filteredProducts   = signal<IProductDetailModel[]>([]);
+  readonly isSkeletonLoading  = signal<boolean>(false);
   
   // Pagination properties (as signals)
   readonly currentPage  = signal<number>(1);
@@ -59,13 +60,17 @@ export class ReorderProductComponent implements OnInit {
     const shortRangeDays = this.shortRange();
     const longRangeDays = this.longRange();
 
+    this.isSkeletonLoading.set(true);
+
     this.productDataService.getProducts(shortRangeDays, longRangeDays).subscribe({
       next: (data: IProductDetailModel[]) => {
         this.products.set(data);
         this.totalItems.set(data.length);
+        this.isSkeletonLoading.set(false);
       },
       error: (error: any) => {
         this.showError(error.message);
+        this.isSkeletonLoading.set(false);
       },
     });
   }

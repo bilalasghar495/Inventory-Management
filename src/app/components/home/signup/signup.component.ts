@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { SignupService } from '../../../Services/sign-up-service';
+import { UserService } from '../../../Services/user-service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../Services/toast.service';
@@ -10,7 +10,7 @@ import { ToastService } from '../../../Services/toast.service';
   styleUrl: './signup.component.scss'
 })
 export class SignupComponent {
-  readonly signupService = inject( SignupService );
+  readonly UserService = inject( UserService );
   readonly router        = inject( Router );
   readonly toastService  = inject( ToastService );
 
@@ -38,18 +38,15 @@ export class SignupComponent {
           password        : formData.password ?? '',
         };
 
-      console.log('Sending signup data:', dataModel);
-      this.signupService.signup(dataModel).subscribe({
-        next: (response) => {
-          console.log('Signup successful', response);
+      this.UserService.signUp(dataModel).subscribe({
+        next: (response ) => {
           this.toastService.success('Account created successfully! Please login.');
           // After successful signup, you can redirect or show a message
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 1500);
         },
-        error: (error) => {
-          console.error('Signup failed', error);
+        error: (error ) => {
           const errorMessage = error.error?.message || 'Signup failed. Please try again.';
           this.toastService.error(errorMessage);
         }

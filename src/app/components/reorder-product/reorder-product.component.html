@@ -81,26 +81,46 @@
                 <th>Urgency</th>
               </tr>
             <tbody>
-              <tr *ngFor="let product of paginatedProducts(); let i = index" class="table-row">
-                <td class="image-column">
-                  <img [src]="product.productImage" 
-                      [alt]="product.productName"
-                      class="product-image">
-                </td>
-              <td>{{ product.productName }}</td>
-              <td>{{ product.availableStock }}</td>
-              <td>{{ product.incomingStock }}</td>
-              <td>{{ product.perDaySoldShortRange | number:'1.0-2' }}</td>
-              <td>{{ product.recommendedRestockShortRange | number:'1.0-2' }}</td>
-              <td>{{ product.perDaySoldLongRange | number:'1.0-2' }}</td>
-              <td>{{ product.recommendedRestockLongRange | number:'1.0-2' }}</td>
-              <td>{{ product.recommendedAverageStock | number:'1.0-2' }}</td>
-              <td>
-                <!-- <span [class]="'urgency-' + product.urgencyLevel?.toLowerCase()">
-                {{ product.urgencyLevel }}
-                </span> -->
-              </td>
-            </tr>
+              <!-- Skeleton Loader -->
+               @if( isSkeletonLoading() ) {
+                  <tr *ngFor="let item of [].constructor(itemsPerPage()); let i = index" class="table-row skeleton-row">
+                    <td class="image-column">
+                      <div class="skeleton skeleton-image"></div>
+                    </td>
+                    <td><div class="skeleton skeleton-text"></div></td>
+                    <td><div class="skeleton skeleton-text-sm"></div></td>
+                    <td><div class="skeleton skeleton-text-sm"></div></td>
+                    <td><div class="skeleton skeleton-text-sm"></div></td>
+                    <td><div class="skeleton skeleton-text-sm"></div></td>
+                    <td><div class="skeleton skeleton-text-sm"></div></td>
+                    <td><div class="skeleton skeleton-text-sm"></div></td>
+                    <td><div class="skeleton skeleton-text-sm"></div></td>
+                    <td><div class="skeleton skeleton-text-sm"></div></td>
+                  </tr>
+              } @else {
+                @for( product of paginatedProducts(); track product.productId ) {
+                  <tr class="table-row">
+                    <td class="image-column">
+                      <img [src]="product.productImage" 
+                          [alt]="product.productName"
+                          class="product-image">  
+                    </td>
+                    <td>{{ product.productName }}</td>
+                    <td>{{ product.availableStock }}</td>
+                    <td>{{ product.incomingStock }}</td>
+                    <td>{{ product.perDaySoldShortRange | number:'1.0-2' }}</td>
+                    <td class="Suggested-qty">{{ product.recommendedRestockShortRange | number:'1.0-2' }}</td>
+                    <td>{{ product.perDaySoldLongRange | number:'1.0-2' }}</td>
+                    <td class="Suggested-qty">{{ product.recommendedRestockLongRange | number:'1.0-2' }}</td>
+                    <td class="Suggested-qty">{{ product.recommendedAverageStock | number:'1.0-2' }}</td>
+                    <td>
+                      <!-- <span [class]="'urgency-' + product.urgencyLevel?.toLowerCase()">
+                      {{ product.urgencyLevel }}
+                      </span> -->
+                    </td>
+                  </tr>
+                }
+              }
             </tbody>
           </table>
         </div>

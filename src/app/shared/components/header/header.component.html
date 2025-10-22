@@ -1,8 +1,8 @@
 <header class="header">
   <!-- Left Section - Page Title -->
   <div class="page-header-title">
-    <h1 class="page-heading">All Items</h1>
-    <p class="page-description">Items detail Information</p>
+    <h1 class="page-heading">{{ pageTitle }}</h1>
+    <p class="page-description">{{ pageDescription }}</p>
   </div>
 
   <!-- Right Section - Search, Notifications & Profile -->
@@ -29,21 +29,52 @@
       </svg>
     </div> -->
 
-    <!-- User Profile -->
-    <div class="profile-section">
-      <img 
-        src="https://ui-avatars.com/api/?name={{ userName }}&background=3B82F6&color=fff&size=128" 
-        alt="User Avatar" 
-        class="profile-avatar"
-      />
-      <div class="profile-info">
-        <div class="profile-name">{{ userName }} W.</div>
-        <div class="profile-role">{{ userRole }}</div>
-      </div>
-      <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 6L8 10L12 6" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+    <div class="relative profile-section">
+      <button type="button"(click)="toggleDropdown()" class="flex items-center gap-3 px-3 py-1.5 rounded-xl transition-all duration-200 hover:bg-gray-50 focus:outline-none">
+        <img 
+          src="https://ui-avatars.com/api/?name={{ userName }}&background=3B82F6&color=fff&size=128" 
+          alt="User Avatar" 
+          class="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
+        />
+        <div class="profile-info">
+          <div class="text-sm font-semibold text-gray-900 leading-tight">{{ userName }} W.</div>
+          <div class="text-xs text-gray-600 leading-tight">{{ userRole }}</div>
+        </div>
+        <svg 
+          class="w-4 h-4 ml-1 text-gray-600 transition-transform duration-200"
+          [class.rotate-180]="isDropdownOpen"
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+
+      <ng-container *ngTemplateOutlet="dropdownMenu"></ng-container>
+
     </div>
   </div>
 </header>
+
+<!-- Tailwind Dropdown Menu -->
+<ng-template #dropdownMenu>
+    <div *ngIf="isDropdownOpen" class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 origin-top-right animate-dropdown">
+    
+    <div class="px-4 py-3 border-b border-gray-100">
+      <p class="text-sm font-semibold text-gray-900">{{ userName }} W.</p>
+      <p class="text-xs text-gray-500 mt-0.5">{{ userRole }}</p>
+    </div>
+
+    <div class="border-t border-gray-100 py-1">
+      <button 
+        (click)="logout()"
+        class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 flex items-center gap-3">
+        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+</ng-template>
 

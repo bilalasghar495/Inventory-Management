@@ -1,4 +1,5 @@
-/* === Layout === */
+@use '../../../styles/components' as *;
+
 .login-wrapper {
     display: flex;
     height: 100vh;
@@ -91,11 +92,8 @@
   
   /* Options */
   .options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 24px;
-    font-size: 14px;
+    font-size: 12px;
   }
   
   .remember-me input {

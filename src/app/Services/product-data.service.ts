@@ -40,7 +40,6 @@ export class ProductDataService {
       params: params 
     }).pipe(
       map((res: IProductApiResponse[]) => {
-        console.log(res);
         if (!Array.isArray(res)) return [];
   
         return res.map((product) => {

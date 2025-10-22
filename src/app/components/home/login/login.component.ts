@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 // Services
-import { SignupService } from '../../../Services/sign-up-service';
+import { UserService } from '../../../Services/user-service';
 import { ToastService } from '../../../Services/toast.service';
 
 @Component({
@@ -12,9 +12,9 @@ import { ToastService } from '../../../Services/toast.service';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  readonly signupService = inject(SignupService);
-  readonly router        = inject(Router);
-  readonly toastService  = inject(ToastService);
+  readonly UserService  = inject(UserService);
+  readonly router       = inject(Router);
+  readonly toastService = inject(ToastService);
 
   readonly fc_email    = new FormControl<string>('', [Validators.required, Validators.email]);
   readonly fc_password = new FormControl<string>('', Validators.required);
@@ -23,6 +23,8 @@ export class LoginComponent {
     email   : this.fc_email,
     password: this.fc_password,
   });
+
+  showFormLoading: boolean = false;
 
   onFormSubmit() {
     if ( this.form.valid ) {
@@ -34,14 +36,18 @@ export class LoginComponent {
         password: formData.password ?? '',
       };
 
-      this.signupService.login(dataModel).subscribe({
+      this.showFormLoading = true;
+
+      this.UserService.login( dataModel?.email, dataModel?.password ).subscribe({
         next: ( response ) => {
           this.toastService.success('Login successful! Welcome back.');
+          this.showFormLoading = false;
           this.router.navigate(['/main']);
         },
         error: ( error ) => {
           const errorMessage = error.status === 401 ? 'Invalid email or password. Please try again.' : 'Login failed. Please try again later.';
           this.toastService.error(errorMessage);
+          this.showFormLoading = false;
         }
       });
     }

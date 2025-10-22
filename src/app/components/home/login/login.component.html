@@ -11,7 +11,7 @@
         <h3 class="welcome-text">Welcome</h3>
         <p class="subtitle">Please login here</p>
   
-        <form [formGroup]="form" (ngSubmit)="onFormSubmit()">
+        <form class="form-root" [formGroup]="form" (ngSubmit)="onFormSubmit()">
           <div class="form-group">
             <label for="email">Email Address</label>
             <input type="email" id="email" placeholder="you@example.com" formControlName="email" />
@@ -31,15 +31,10 @@
             </div>
           </div>
   
-          <div class="options">
-            <label class="remember-me">
-              <input type="checkbox" /> Remember Me
-            </label>
-            <a class="forgot-link" routerLink="/forgot-password">Forgot Password?</a>
-          </div>
+          <a class="text-blue-400 hover:text-blue-600 text-sm text-end block mb-4" routerLink="/forgot-password">Forgot Password?</a>
   
-          <button type="submit" class="login-btn" [disabled]="form.invalid">Login</button>
-          <p class="text-center text-sm text-gray-500 mt-2">Don't have an account? <a routerLink="/signup" class="text-blue-500 hover:text-blue-700">Sign up</a></p>
+          <button type="submit" class="login-btn" [disabled]="form.invalid" [class.show-loading]="showFormLoading" [class.loader-hide-text]="showFormLoading"><span>Login</span></button>
+          <p class="text-center text-sm text-gray-500 mt-2">Don't have an account? <a routerLink="/signup" class="text-blue-400 hover:text-blue-600">Sign up</a></p>
         </form>
       </div>
     </div>
