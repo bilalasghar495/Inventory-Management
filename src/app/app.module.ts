@@ -17,6 +17,7 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
 import { HeaderComponent } from './shared/components/header/header.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MainLayoutComponent } from './components/main-layout/main-layout.component';
+import { ToastComponent } from './shared/components/toast/toast.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { MainLayoutComponent } from './components/main-layout/main-layout.compon
     HeaderComponent,
     DashboardComponent,
     MainLayoutComponent,
+    ToastComponent,
   ],
   imports: [
     BrowserModule,

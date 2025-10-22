@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { SignupService } from '../../../Services/sign-up-service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../Services/toast.service';
 
 @Component({
   selector: 'app-signup',
@@ -10,7 +11,8 @@ import { Router } from '@angular/router';
 })
 export class SignupComponent {
   readonly signupService = inject( SignupService );
-  readonly router        = inject(Router);
+  readonly router        = inject( Router );
+  readonly toastService  = inject( ToastService );
 
 
   readonly fc_name        = new FormControl<string>('', Validators.required);
@@ -25,30 +27,34 @@ export class SignupComponent {
   });
 
   onFormSubmit() {
-  	if ( this.form.valid ) {
-      // Form is valid - pull the values into a dataModel
-      const formData = this.form.value;
+      if ( this.form.valid ) {
+        // Form is valid - pull the values into a dataModel
+        const formData = this.form.value;
 
-      // Build data model
-      const dataModel = {
-        name            : formData.name ?? '',
-        email           : formData.email ?? '',
-        password        : formData.password ?? '',
-      };
+        // Build data model
+        const dataModel = {
+          name            : formData.name ?? '',
+          email           : formData.email ?? '',
+          password        : formData.password ?? '',
+        };
 
-    console.log('Sending signup data:', dataModel);
-    this.signupService.signup(dataModel).subscribe({
-      next: (response) => {
-        console.log('Signup successful', response);
-        // After successful signup, you can redirect or show a message
-        this.router.navigate(['/']);
-      },
-      error: (error) => {
-        console.error('Signup failed', error);
-        // Handle error response, maybe show a user-friendly message
-      }
-    });
+      console.log('Sending signup data:', dataModel);
+      this.signupService.signup(dataModel).subscribe({
+        next: (response) => {
+          console.log('Signup successful', response);
+          this.toastService.success('Account created successfully! Please login.');
+          // After successful signup, you can redirect or show a message
+          setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 1500);
+        },
+        error: (error) => {
+          console.error('Signup failed', error);
+          const errorMessage = error.error?.message || 'Signup failed. Please try again.';
+          this.toastService.error(errorMessage);
+        }
+      });
+    }
   }
-}
 }
 

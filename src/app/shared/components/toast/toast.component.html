@@ -1,0 +1,35 @@
+<div class="fixed top-5 right-5 z-50 max-w-sm">
+  @for ( toast of toasts; track toast.id ) {
+    <div [ngClass]="getToastClasses(toast.type)" [@slideIn]>
+        <div class="flex items-start">
+        <div class="flex-shrink-0">
+            <svg [ngClass]="getIconColor(toast.type)" 
+                class="w-6 h-6" 
+                fill="currentColor" 
+                viewBox="0 0 20 20">
+            <path fill-rule="evenodd" [attr.d]="getIconPath(toast.type)" clip-rule="evenodd"></path>
+            </svg>
+        </div>
+        <div class="ml-3 flex-1">
+            <p class="text-sm font-medium">{{ toast.message }}</p>
+        </div>
+        <div class="ml-4 flex-shrink-0 flex">
+            <button (click)="removeToast(toast.id)" 
+                    class="inline-flex rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    [ngClass]="{
+                    'text-green-500 hover:text-green-600 focus:ring-green-500': toast.type === 'success',
+                    'text-red-500 hover:text-red-600 focus:ring-red-500 bg-red-50': toast.type === 'error',
+                    'text-yellow-500 hover:text-yellow-600 focus:ring-yellow-500': toast.type === 'warning',
+                    'text-blue-500 hover:text-blue-600 focus:ring-blue-500': toast.type === 'info'
+                    }">
+            <span class="sr-only">Close</span>
+            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+            </button>
+        </div>
+        </div>
+    </div>
+  }
+</div>
+

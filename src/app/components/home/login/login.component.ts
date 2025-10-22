@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 // Services
 import { SignupService } from '../../../Services/sign-up-service';
+import { ToastService } from '../../../Services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,7 @@ import { SignupService } from '../../../Services/sign-up-service';
 export class LoginComponent {
   readonly signupService = inject(SignupService);
   readonly router        = inject(Router);
+  readonly toastService  = inject(ToastService);
 
   readonly fc_email    = new FormControl<string>('', [Validators.required, Validators.email]);
   readonly fc_password = new FormControl<string>('', Validators.required);
@@ -33,12 +35,13 @@ export class LoginComponent {
       };
 
       this.signupService.login(dataModel).subscribe({
-        next: (response) => {
-          console.log('Login successful', response);
+        next: ( response ) => {
+          this.toastService.success('Login successful! Welcome back.');
           this.router.navigate(['/main']);
         },
-        error: (error) => {
-          console.error('Login failed', error);
+        error: ( error ) => {
+          const errorMessage = error.status === 401 ? 'Invalid email or password. Please try again.' : 'Login failed. Please try again later.';
+          this.toastService.error(errorMessage);
         }
       });
     }

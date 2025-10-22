@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 // Services
 import { SignupService } from '../../Services/sign-up-service';
+import { ToastService } from '../../Services/toast.service';
 
 
 @Component({
@@ -14,6 +15,7 @@ import { SignupService } from '../../Services/sign-up-service';
 export class SignupComponent {
   readonly signupService = inject( SignupService );
   readonly router        = inject(Router);
+  readonly toastService  = inject(ToastService);
 
 
   readonly fc_name        = new FormControl<string>('', Validators.required);
@@ -40,10 +42,16 @@ export class SignupComponent {
 
     this.signupService.signup(dataModel).subscribe({
       next: (response) => {
-        this.router.navigate(['/']);
+        console.log('Signup successful', response);
+        this.toastService.success('Account created successfully! Please login.');
+        setTimeout(() => {
+          this.router.navigate(['/']);
+        }, 1500);
       },
       error: (error: any) => {
         console.error('Signup failed', error);
+        const errorMessage = error.error?.message || 'Signup failed. Please try again.';
+        this.toastService.error(errorMessage);
       }
     });
   }

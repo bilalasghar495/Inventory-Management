@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 
 // Models
@@ -29,10 +29,18 @@ export class ProductDataService {
 
 
   getProducts( rangeDays1: number = 7, rangeDays2: number = 30 ): Observable<IProductDetailModel[]> {
-    const url = `${this.API_URLS.PRODUCTS}&rangeDays1=${rangeDays1}&rangeDays2=${rangeDays2}`;
+    const params = new HttpParams()
+      .set('store', 'testapplica.myshopify.com')
+      .set('limit', '250')
+      .set('rangeDays1', rangeDays1.toString())
+      .set('rangeDays2', rangeDays2.toString());
   
-    return this.http.get<IProductApiResponse[]>(url, { headers: this.headers }).pipe(
+    return this.http.get<IProductApiResponse[]>(`${this.baseApiUrl}/restock-prediction`, { 
+      headers: this.headers,
+      params: params 
+    }).pipe(
       map((res: IProductApiResponse[]) => {
+        console.log(res);
         if (!Array.isArray(res)) return [];
   
         return res.map((product) => {
