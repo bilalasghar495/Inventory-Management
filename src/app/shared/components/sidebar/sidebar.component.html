@@ -2,15 +2,7 @@
   <!-- Logo Section -->
   <div class="logo-section">
     <div class="logo-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="24" height="24" rx="4" fill="url(#gradient)"/>
-        <defs>
-          <linearGradient id="gradient" x1="0" y1="0" x2="24" y2="24">
-            <stop offset="0%" stop-color="#3B82F6"/>
-            <stop offset="100%" stop-color="#8B5CF6"/>
-          </linearGradient>
-        </defs>
-      </svg>
+        <img src="assets/images/InventoryLogo.svg" alt="Inventory Logo" />
     </div>
     <span class="logo-text">Inventory</span>
   </div>
@@ -21,12 +13,7 @@
       class="menu-item" 
       [class.active]="selectedMenu === 'dashboard'"
       (click)="selectMenu('dashboard')">
-      <svg class="menu-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
-        <rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
-        <rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
-        <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
+      <img src="assets/images/dashboard.svg" alt="Dashboard" />
       <span class="menu-text">Dashboard</span>
     </div>
 
@@ -34,10 +21,8 @@
       class="menu-item" 
       [class.active]="selectedMenu === 'items'"
       (click)="selectMenu('items')">
-      <svg class="menu-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <span class="menu-text">Items</span>
+      <img src="assets/images/items.svg" alt="Products" />
+      <span class="menu-text">Products</span>
     </div>
 
     <div 

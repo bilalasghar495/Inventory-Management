@@ -12,10 +12,9 @@ export class HeaderComponent {
     private router      = inject( Router );
     private userService = inject( UserService );
 
-    userName       : string  = 'Mathias';
-    userRole       : string  = 'Store Manager';
+    userName       : string  = 'Bilal Asghar';
     pageTitle      : string  = 'All Products';
-    pageDescription: string  = 'Products detail Information';
+    pageDescription: string  = 'Manage Product Restocking';
     searchQuery    : string  = '';
     isDropdownOpen : boolean = false;
 

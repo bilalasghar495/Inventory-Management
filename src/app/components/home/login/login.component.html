@@ -1,39 +1,38 @@
-<div class="login-wrapper">
+<div class="auth-wrapper">
     <app-image-panel></app-image-panel>
   
-    <div class="login-right">
-      <div class="login-box">
-        <div class="logo">
+    <div class="auth-right">
+      <div class="auth-box">
+        <div class="auth-logo">
           <img src="/assets/images/logo.png" alt="Inventory Logo" />
-          <!-- <h2>Inventory</h2> -->
         </div>
   
-        <h3 class="welcome-text">Welcome</h3>
-        <p class="subtitle">Please login here</p>
+        <h3 class="auth-title">Welcome</h3>
+        <p class="auth-subtitle">Please login here</p>
   
         <form class="form-root" [formGroup]="form" (ngSubmit)="onFormSubmit()">
-          <div class="form-group">
+          <div class="auth-form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" placeholder="you@example.com" formControlName="email" />
-            <div *ngIf="fc_email.invalid && (fc_email.dirty || fc_email.touched)" class="error-message">
+            <input type="email" id="email" placeholder="you@example.com" formControlName="email" class="auth-input" />
+            <div *ngIf="fc_email.invalid && (fc_email.dirty || fc_email.touched)" class="auth-error-message">
               <small *ngIf="fc_email.errors?.['required']">Email is required</small>
               <small *ngIf="fc_email.errors?.['email']">Please enter a valid email</small>
             </div>
           </div>
   
-          <div class="form-group">
+          <div class="auth-form-group">
             <label for="password">Password</label>
-            <div class="password-field">
-              <input type="password" id="password" placeholder="Enter password" formControlName="password" />
+            <div class="auth-password-field">
+              <input type="password" id="password" placeholder="Enter password" formControlName="password" class="auth-input" />
             </div>
-            <div *ngIf="fc_password.invalid && (fc_password.dirty || fc_password.touched)" class="error-message">
+            <div *ngIf="fc_password.invalid && (fc_password.dirty || fc_password.touched)" class="auth-error-message">
               <small *ngIf="fc_password.errors?.['required']">Password is required</small>
             </div>
           </div>
   
           <a class="text-blue-400 hover:text-blue-600 text-sm text-end block mb-4" routerLink="/forgot-password">Forgot Password?</a>
   
-          <button type="submit" class="login-btn" [disabled]="form.invalid" [class.show-loading]="showFormLoading" [class.loader-hide-text]="showFormLoading"><span>Login</span></button>
+          <button type="submit" class="auth-btn" [disabled]="form.invalid" [class.show-loading]="showFormLoading" [class.loader-hide-text]="showFormLoading"><span>Login</span></button>
           <p class="text-center text-sm text-gray-500 mt-2">Don't have an account? <a routerLink="/signup" class="text-blue-400 hover:text-blue-600">Sign up</a></p>
         </form>
       </div>

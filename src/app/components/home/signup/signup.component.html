@@ -1,43 +1,42 @@
-<div class="signup-wrapper">
+<div class="auth-wrapper">
     <app-image-panel></app-image-panel>
   
-    <div class="signup-right">
-      <div class="signup-box">
-        <div class="logo">
+    <div class="auth-right">
+      <div class="auth-box">
+        <div class="auth-logo">
           <img src="/assets/images/logo.png" alt="Inventory Logo" />
-          <!-- <h2>Inventory</h2> -->
         </div>
   
-        <h3 class="welcome-text">Create an account</h3>
-        <p class="subtitle">Please sign up here</p>
+        <h3 class="auth-title">Create an account</h3>
+        <p class="auth-subtitle">Please sign up here</p>
   
         <form [formGroup]="form" (ngSubmit)="onFormSubmit()">
-            <div class="form-group">
+            <div class="auth-form-group">
               <label>Name</label>
-              <input type="name" id="name" formControlName="name" placeholder="Enter name" />
-              <div *ngIf="fc_name.invalid && fc_name.touched" class="error-message">
-                <p class="text-orange-500 text-sm mt-1 ms-2" *ngIf="fc_name.hasError('required')">Name is required</p>
+              <input type="text" id="name" formControlName="name" placeholder="Enter name" class="auth-input" />
+              <div *ngIf="fc_name.invalid && fc_name.touched" class="auth-error-message">
+                <p *ngIf="fc_name.hasError('required')">Name is required</p>
               </div>
             </div>
     
-            <div class="form-group">
+            <div class="auth-form-group">
               <label>Email Address</label>
-              <input type="email" id="email" formControlName="email" placeholder="you@example.com" />
-              <div *ngIf="fc_email.invalid && fc_email.touched" class="error-message">
-                <p class="text-orange-500 text-sm mt-1 ms-2" *ngIf="fc_email.hasError('required')">Email is required</p>
-                <p class="text-orange-500 text-sm mt-1 ms-2" *ngIf="fc_email.hasError('email')">Invalid email</p>
+              <input type="email" id="email" formControlName="email" placeholder="you@example.com" class="auth-input" />
+              <div *ngIf="fc_email.invalid && fc_email.touched" class="auth-error-message">
+                <p *ngIf="fc_email.hasError('required')">Email is required</p>
+                <p *ngIf="fc_email.hasError('email')">Invalid email</p>
               </div>
             </div>
     
-            <div class="form-group">
+            <div class="auth-form-group">
               <label>Password</label>
-              <input type="password" id="password" formControlName="password" placeholder="Enter password" />
-              <div *ngIf="fc_password.invalid && fc_password.touched" class="error-message">
-                <p class="text-orange-500 text-sm mt-1 ms-2" *ngIf="fc_password.hasError('required')">Password is required</p>
+              <input type="password" id="password" formControlName="password" placeholder="Enter password" class="auth-input" />
+              <div *ngIf="fc_password.invalid && fc_password.touched" class="auth-error-message">
+                <p *ngIf="fc_password.hasError('required')">Password is required</p>
               </div>
             </div>
     
-            <button type="submit" class="signup-btn" [disabled]="form.invalid">Sign up</button>
+            <button type="submit" class="auth-btn" [disabled]="form.invalid">Sign up</button>
             <p class="text-center text-sm text-gray-500 mt-2">Already have an account? <a routerLink="/" class="text-blue-500 hover:text-blue-700">Login</a></p>
           </form>
       </div>

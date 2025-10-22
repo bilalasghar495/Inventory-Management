@@ -1,3 +1,167 @@
+// ========================================
+// Auth Form Common Styles
+// ========================================
+
+/* === Auth Wrapper Layout === */
+.auth-wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background-color: #f9fafb;
+  font-family: "Inter", sans-serif;
+}
+
+/* Right side (form container) */
+.auth-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* === Auth Form Box === */
+.auth-box {
+  width: 500px;
+  background: #ffffff;
+  padding: 40px 36px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* === Logo === */
+.auth-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+
+  img {
+    height: 50px;
+  }
+}
+
+/* === Texts === */
+.auth-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+/* === Form Elements === */
+.auth-form-group {
+  margin-bottom: 20px;
+  position: relative;
+
+  label {
+    font-size: 14px;
+    color: #374151;
+    display: block;
+    margin-bottom: 6px;
+  }
+}
+
+/* Input fields */
+.auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    border-color: #3b82f6;
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+/* Password field wrapper */
+.auth-password-field {
+  position: relative;
+
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+}
+
+/* Error Messages */
+.auth-error-message {
+  margin-top: 4px;
+
+  small, p {
+    color: #dc2626;
+    font-size: 12px;
+  }
+}
+
+/* === Buttons === */
+.auth-btn {
+  width: 100%;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #1e40af;
+  }
+
+  &:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: #9ca3af;
+    }
+  }
+}
+
+/* === Responsive === */
+@media (max-width: 900px) {
+  .auth-wrapper {
+    flex-direction: column;
+  }
+
+  .auth-left {
+    display: none;
+  }
+
+  .auth-right {
+    flex: none;
+    height: 100vh;
+  }
+
+  .auth-box {
+    width: 90%;
+    max-width: 380px;
+  }
+}
+
+// ========================================
+// Form Root Styles
+// ========================================
+
 .form-root {
 	button.show-loading {
 		background-image: url('/assets/images/dots.svg');
@@ -19,8 +183,10 @@
 
 }
 
-
+// ========================================
 // Skeleton Loader Styles
+// ========================================
+
 .skeleton {
     background: linear-gradient(
       90deg,

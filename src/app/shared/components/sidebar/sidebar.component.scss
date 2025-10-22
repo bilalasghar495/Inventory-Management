@@ -1,7 +1,10 @@
+@use '../../../styles/variable' as *;
+
 .sidebar {
   width: 240px;
   height: calc(100vh - 40px);
-  background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 100%);
+  background: $color-powder-blue;
+//   background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 100%);
   display: flex;
   flex-direction: column;
   padding: 24px 16px;
@@ -33,9 +36,9 @@
     }
 
     .logo-text {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
-      color: #1E293B;
+      color: $color-charcoal;
     }
   }
 
@@ -55,7 +58,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
-      color: #475569;
+      color: $color-charcoal;
 
       .menu-icon {
         width: 20px;
@@ -70,73 +73,73 @@
 
       &:hover {
         background: rgba(59, 130, 246, 0.1);
-        color: #2563EB;
+        color: $color-blue;
       }
 
       &.active {
-        background: #3B82F6;
-        color: white;
+        background: $color-royal-blue;
+        color: $color-white;
         box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
       }
     }
   }
 
   // Theme Toggle Section
-  .theme-toggle-section {
-    margin-top: auto;
-    padding-top: 16px;
+//   .theme-toggle-section {
+//     margin-top: auto;
+//     padding-top: 16px;
 
-    .theme-toggle {
-      display: flex;
-      gap: 8px;
-      background: white;
-      border-radius: 8px;
-      padding: 4px;
+//     .theme-toggle {
+//       display: flex;
+//       gap: 8px;
+//       background: $color-white;
+//       border-radius: 8px;
+//       padding: 4px;
 
-      .theme-btn {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding: 8px 12px;
-        border: none;
-        background: transparent;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
-        color: #64748B;
-        transition: all 0.2s ease;
+//       .theme-btn {
+//         flex: 1;
+//         display: flex;
+//         align-items: center;
+//         justify-content: center;
+//         gap: 6px;
+//         padding: 8px 12px;
+//         border: none;
+//         background: transparent;
+//         border-radius: 6px;
+//         cursor: pointer;
+//         font-size: 13px;
+//         font-weight: 500;
+//         color: #64748B;
+//         transition: all 0.2s ease;
 
-        svg {
-          width: 16px;
-          height: 16px;
-        }
+//         svg {
+//           width: 16px;
+//           height: 16px;
+//         }
 
-        &:hover {
-          background: #F1F5F9;
-          color: #475569;
-        }
+//         &:hover {
+//           background: #F1F5F9;
+//           color: #475569;
+//         }
 
-        &.active {
-          background: #3B82F6;
-          color: white;
-          box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
-        }
-      }
-    }
-  }
+//         &.active {
+//           background: #3B82F6;
+//           color: white;
+//           box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+//         }
+//       }
+//     }
+//   }
 }
 
 // Responsive Design
-@media (max-width: 1024px) {
+@media ( max-width: 1024px ) {
   .sidebar {
     width: 220px;
   }
 }
 
-@media (max-width: 768px) {
+@media ( max-width: 768px ) {
   .sidebar {
     width: 70px;
     padding: 20px 8px;

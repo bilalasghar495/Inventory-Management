@@ -1,12 +1,15 @@
 <div class="content-card">
         <div class="search-actions-section">
-          <div class="search-container">
-            <div class="search-input-wrapper">
-              <input 
-                type="text" 
-                class="search-input bg-white text-black p-2" 
-                placeholder="Search Item">
-            </div>
+          <div class="search-bar">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="5.5" stroke="#9CA3AF" stroke-width="1.5"/>
+              <path d="M13 13L16.5 16.5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input 
+              type="text" 
+              placeholder="Search" 
+              class="search-input"
+            />
           </div>
           
           <div class="actions-container">
@@ -66,18 +69,18 @@
                 <!-- <th class="checkbox-column">
                   <input type="checkbox" class="select-all-checkbox">
                 </th> -->
-                <th>ProductImage</th>
+                <th>Image</th>
                 <th rowspan="2" class="sortable-column">
-                  Product Name
+                  Product
                 </th>
                 <!-- <th rowspan="2">Variant Name</th> -->
-                <th>Available Stock</th>
-                <th>Incoming Stock</th>
-                <th>Sold / {{ shortRange() }} days</th>
-                <th>Suggested Reorder Qty / {{ shortRange() }} days</th>
-                <th>Sold / {{ longRange() }} days</th>
-                <th>Suggested Reorder Qty / {{ longRange() }} days</th>
-                <th>Suggested Reorder Qty / Average</th>
+                <th>Available</th>
+                <th>Incoming</th>
+                <th>Sold Per Day( {{ shortRange() }} days ) </th>
+                <th>Suggested Reorder Qty( {{ shortRange() }} days )</th>
+                <th>Sold Per Day( {{ longRange() }} days )</th>
+                <th>Suggested Reorder Qty( {{ longRange() }} days )</th>
+                <th>Suggested Reorder Qty( Average )</th>
                 <th>Urgency</th>
               </tr>
             <tbody>

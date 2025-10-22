@@ -1,0 +1,34 @@
+// Colors
+$color-green        : #42AD65;
+$color-orange       : #FF5000;
+$color-red          : #D50F06;
+$color-yellow       : #FFD213;
+$color-orange-yellow: #FCAF22;
+$color-blue         : #00A2C1;
+$color-black        : #000000;
+$color-white        : #FFFFFF;
+
+// Blue Colors
+$color-powder-blue   : #DBEAFE;
+$color-royal-blue    : #3B82F6;
+
+// Gray Colors
+$color-barely-gray   : #F8F9FA;
+$color-lightest-gray : #F6F6F7;
+$color-lighter-gray  : #E8E9ED;
+$color-new-light-gray: #DBDCE0;
+$color-light-gray    : #CFCFD4;
+$color-faded-gray    : #AEB0B5;
+$color-gray          : #8E9197;
+$color-medium-gray   : #73757B;
+$color-dark-gray     : #595A5F;
+$color-darker-gray   : #3A3A3F;
+$color-darkest-gray  : #303034;
+$color-charcoal      : #27272A;
+
+// Standard colors
+$std-border-color : $color-new-light-gray;
+$color-skeleton-bg: $color-new-light-gray;
+
+$light-grey-background-color: lighten($std-border-color, 10);
+$grey-background-color      : lighten($std-border-color, 6);
