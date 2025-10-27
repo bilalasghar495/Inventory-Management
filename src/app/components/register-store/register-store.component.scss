@@ -1,0 +1,162 @@
+    @use '../../styles/variable' as *;
+    @use '../../styles/components' as *;
+
+    .back-button {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 24px;
+        font-size: 14px;
+        color: #374151;
+      
+        a {
+          text-decoration: none;
+          color: #374151;
+        }
+    }
+
+    .register-store-page {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    }
+
+    .register-store-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    overflow-y: auto;
+    }
+
+    .register-store-content {
+    width: 100%;
+    max-width: 480px;
+    }
+
+    .register-store-header {
+    margin-bottom: 32px;
+    text-align: center;
+    }
+
+    .register-store-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: $color-charcoal;
+    margin: 0 0 12px 0;
+    }
+
+    .register-store-description {
+    color: $color-medium-gray;
+    font-size: 16px;
+    margin: 0;
+    line-height: 1.5;
+    }
+
+    .form-group {
+    margin-bottom: 24px;
+
+    label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        color: $color-charcoal;
+        margin-bottom: 8px;
+    }
+    }
+
+    .form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid $color-new-light-gray;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.2s;
+    outline: none;
+    box-sizing: border-box;
+
+    &:focus {
+        border-color: $color-royal-blue;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &::placeholder {
+        color: $color-faded-gray;
+    }
+
+    &:disabled {
+        background-color: $color-lightest-gray;
+        cursor: not-allowed;
+    }
+    }
+
+    .error-message {
+    margin-top: 6px;
+
+    small {
+        color: $color-red;
+        font-size: 12px;
+        display: block;
+    }
+    }
+
+    .form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 32px;
+    }
+
+    .btn-primary,
+    .btn-skip {
+    width: 100%;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    position: relative;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    }
+
+    .btn-primary {
+    background-color: $color-royal-blue;
+    color: white;
+
+    &:hover:not(:disabled) {
+        background-color: darken($color-royal-blue, 5%);
+    }
+    }
+
+    .btn-skip {
+    background-color: transparent;
+    color: $color-charcoal;
+    border: 1px solid $color-new-light-gray;
+
+    &:hover:not(:disabled) {
+        background-color: $color-lightest-gray;
+    }
+    }
+
+    // Responsive design
+    @media ( max-width: 768px ) {
+    .register-store-page {
+        flex-direction: column;
+    }
+
+    .register-store-title {
+        font-size: 28px;
+    }
+
+    .register-store-description {
+        font-size: 14px;
+    }
+}

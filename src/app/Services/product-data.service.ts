@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 
@@ -7,17 +7,19 @@ import { IProductDetailModel, IProductApiResponse } from '../models/product.mode
 
 // Environment
 import { environment } from '../../environments/environment';
+import { UserService } from './user-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductDataService {
+  readonly userService  = inject(UserService);
 
 	protected baseApiUrl : string = `${environment.apiUrl}`;
   
   // API URLS
   readonly API_URLS = {
-    PRODUCTS: `${this.baseApiUrl}/restock-prediction?store=testapplica.myshopify.com&limit=250`
+    PRODUCTS: `${this.baseApiUrl}/restock-prediction`
   };
 
   private headers = new HttpHeaders({
@@ -29,24 +31,25 @@ export class ProductDataService {
 
 
   getProducts( rangeDays1: number = 7, rangeDays2: number = 30 ): Observable<IProductDetailModel[]> {
+    const storeUrl = this.userService.getStoreUrl();
+    console.log( 'storeUrl', storeUrl );
     const params = new HttpParams()
-      .set('store', 'testapplica.myshopify.com')
+      .set('store', storeUrl ?? '')
       .set('limit', '250')
       .set('rangeDays1', rangeDays1.toString())
       .set('rangeDays2', rangeDays2.toString());
   
-    return this.http.get<IProductApiResponse[]>(`${this.baseApiUrl}/restock-prediction`, { 
+    return this.http.get<IProductApiResponse[]>(`${this.API_URLS.PRODUCTS}`, { 
       headers: this.headers,
       params: params 
     }).pipe(
       map((res: IProductApiResponse[]) => {
         if (!Array.isArray(res)) return [];
+        console.log( 'res', res );
   
         return res.map((product) => {
           const displayName =
-            product.variantName && product.variantName !== 'Default Title'
-              ? `${product.productName} - ${product.variantName}`
-              : product.productName;
+            product.variantName && product.variantName !== 'Default Title' ? `${product.productName} - ${product.variantName}` : product.productName;
   
           return {
             productId: product.productId,

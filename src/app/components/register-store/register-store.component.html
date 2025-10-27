@@ -1,0 +1,71 @@
+<div class="register-store-page">
+  <app-image-panel></app-image-panel>
+
+  <div class="register-store-container">
+    <div class="register-store-content">
+        <div class="back-button">
+            <span class="back-icon">←</span>
+            <a routerLink="/">Back</a>
+        </div>
+      <div class="register-store-header">
+        <h1 class="register-store-title">Connect Your Shopify Store</h1>
+        <p class="register-store-description">Enter your store’s Shopify URL to continue</p>
+      </div>
+
+      <!-- If app is not installed -->
+      <div *ngIf="showInstallButton">
+        <div id="alert-additional-content-2" class="p-4 mb-4 text-red-800 border border-red-300 rounded-lg bg-red-50" role="alert">
+            <div class="flex items-center">
+              <svg class="shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+              </svg>
+              <span class="sr-only">Info</span>
+              <h3 class="text-lg font-medium">App Not Installed</h3>
+            </div>
+            <div class="mt-2 mb-4 text-sm">
+              Your store is not connected yet. Please install the app to continue.
+            </div>
+            <div class="flex">
+              <button type="button" class="text-gray-500 bg-white border me-2 border-gray-500 hover:border-black hover:text-black font-medium rounded-lg text-xs px-3 py-1.5" (click)="onInstallClick()">
+                Install App
+              </button>
+              <button type="button" class="text-gray-500 bg-white border border-gray-500 hover:border-black hover:text-black font-medium rounded-lg text-xs px-3 py-1.5" (click)="onDismiss()" aria-label="Close">
+                Dismiss
+              </button>
+            </div>
+          </div>
+      </div>
+
+      <form class="form-root" [formGroup]="form" (ngSubmit)="onFormSubmit()">
+        <div class="form-group">
+          <label for="storeUrl">Store URL</label>
+          <input 
+            type="text" 
+            id="storeUrl" 
+            formControlName="storeUrl" 
+            placeholder="yourstore.myshopify.com" 
+            class="form-input"
+          />
+          <div *ngIf="fc_storeUrl.invalid && (fc_storeUrl.dirty || fc_storeUrl.touched)" class="error-message">
+            <small *ngIf="fc_storeUrl.errors?.['required']">Store URL is required</small>
+            <small *ngIf="fc_storeUrl.errors?.['pattern']">Please enter a valid URL</small>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn-primary" 
+            [disabled]="form.invalid || showInstallButton" 
+            [class.show-loading]="showFormLoading" 
+            [class.loader-hide-text]="showFormLoading">
+            <span>Check Installation</span>
+          </button>
+
+          <button type="button" class="btn-skip" (click)="onSkip()">Skip for now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

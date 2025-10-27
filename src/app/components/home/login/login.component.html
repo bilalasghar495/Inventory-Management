@@ -23,14 +23,18 @@
           <div class="auth-form-group">
             <label for="password">Password</label>
             <div class="auth-password-field">
-              <input type="password" id="password" placeholder="Enter password" formControlName="password" class="auth-input" />
+              <input [type]="showPassword ? 'text' : 'password'" id="password" placeholder="Enter password" formControlName="password" class="auth-input" />
+              <button type="button" class="toggle-password" (click)="togglePasswordVisibility()" aria-label="Toggle password visibility">
+                <i [ngClass]="showPassword ? 'bi-eye' : 'bi-eye-slash'"></i>
+              </button>
+          
             </div>
             <div *ngIf="fc_password.invalid && (fc_password.dirty || fc_password.touched)" class="auth-error-message">
               <small *ngIf="fc_password.errors?.['required']">Password is required</small>
             </div>
           </div>
   
-          <a class="text-blue-400 hover:text-blue-600 text-sm text-end block mb-4" routerLink="/forgot-password">Forgot Password?</a>
+          <a class="text-blue-400 hover:text-blue-600 text-sm block mb-4" routerLink="/forgot-password">Forgot Password?</a>
   
           <button type="submit" class="auth-btn" [disabled]="form.invalid" [class.show-loading]="showFormLoading" [class.loader-hide-text]="showFormLoading"><span>Login</span></button>
           <p class="text-center text-sm text-gray-500 mt-2">Don't have an account? <a routerLink="/signup" class="text-blue-400 hover:text-blue-600">Sign up</a></p>

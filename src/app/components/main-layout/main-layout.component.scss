@@ -18,3 +18,19 @@
   overflow-y: auto;
 }
 
+// Mobile Layout
+@media ( max-width: 768px ) {
+  .main-layout {
+    flex-direction: column;
+  }
+
+  .main-content {
+    margin-top: 0;
+    padding-bottom: 80px;
+  }
+
+  .page-content {
+    padding: 16px;
+  }
+}
+

@@ -5,6 +5,7 @@ import { ProductDataService } from '../../Services/product-data.service';
 
 // Models
 import { IProductDetailModel } from '../../models/product.model';
+import { ToastService } from '../../Services/toast.service';
 
 @Component({
   selector: 'app-reorder-product',
@@ -13,7 +14,8 @@ import { IProductDetailModel } from '../../models/product.model';
 })
 export class ReorderProductComponent implements OnInit {
   readonly productDataService = inject( ProductDataService );
-
+  readonly toastService       = inject( ToastService );
+  
   readonly products           = signal<IProductDetailModel[]>([]);
   readonly filteredProducts   = signal<IProductDetailModel[]>([]);
   readonly isSkeletonLoading  = signal<boolean>(false);
@@ -62,15 +64,15 @@ export class ReorderProductComponent implements OnInit {
 
     this.isSkeletonLoading.set(true);
 
-    this.productDataService.getProducts(shortRangeDays, longRangeDays).subscribe({
+    this.productDataService.getProducts( shortRangeDays, longRangeDays ).subscribe({
       next: (data: IProductDetailModel[]) => {
-        this.products.set(data);
-        this.totalItems.set(data.length);
+        this.products.set( data );
+        this.totalItems.set( data.length );
         this.isSkeletonLoading.set(false);
       },
       error: (error: any) => {
-        this.showError(error.message);
-        this.isSkeletonLoading.set(false);
+        this.showError( error.message );
+        this.isSkeletonLoading.set( false );
       },
     });
   }
@@ -88,6 +90,6 @@ export class ReorderProductComponent implements OnInit {
 
 
   private showError( message: string ): void {
-    console.error('Error:', message);
+    this.toastService.error( message );
   }
 }

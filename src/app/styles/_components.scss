@@ -1,8 +1,5 @@
-// ========================================
-// Auth Form Common Styles
-// ========================================
+@use 'variable' as *;
 
-/* === Auth Wrapper Layout === */
 .auth-wrapper {
   display: flex;
   height: 100vh;
@@ -11,7 +8,6 @@
   font-family: "Inter", sans-serif;
 }
 
-/* Right side (form container) */
 .auth-right {
   flex: 1;
   display: flex;
@@ -19,7 +15,6 @@
   align-items: center;
 }
 
-/* === Auth Form Box === */
 .auth-box {
   width: 500px;
   background: #ffffff;
@@ -28,7 +23,6 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* === Logo === */
 .auth-logo {
   display: flex;
   justify-content: center;
@@ -39,7 +33,6 @@
   }
 }
 
-/* === Texts === */
 .auth-title {
   font-size: 24px;
   font-weight: 600;
@@ -53,7 +46,6 @@
   margin-bottom: 24px;
 }
 
-/* === Form Elements === */
 .auth-form-group {
   margin-bottom: 20px;
   position: relative;
@@ -66,7 +58,6 @@
   }
 }
 
-/* Input fields */
 .auth-input {
   width: 100%;
   padding: 12px 14px;
@@ -85,18 +76,37 @@
   }
 }
 
-/* Password field wrapper */
 .auth-password-field {
   position: relative;
 
+  input.auth-input {
+    padding-right: 45px; // Make room for the icon
+  }
+
   .toggle-password {
     position: absolute;
-    right: 10px;
-    top: 8px;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
+    color: $color-gray;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+
+    &:hover {
+      color: #2563eb;
+    }
+
+    i {
+      pointer-events: none;
+      font-size: 18px;
+    }
   }
 }
 
@@ -110,7 +120,6 @@
   }
 }
 
-/* === Buttons === */
 .auth-btn {
   width: 100%;
   background-color: #2563eb;
@@ -137,7 +146,6 @@
   }
 }
 
-/* === Responsive === */
 @media (max-width: 900px) {
   .auth-wrapper {
     flex-direction: column;

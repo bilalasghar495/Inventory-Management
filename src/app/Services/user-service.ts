@@ -12,8 +12,9 @@ export class UserService {
   
   // API URLS
   readonly API_URLS = {
-    SIGNUP: `${this.baseApiUrl}/signup`,
-    LOGIN: `${this.baseApiUrl}/login`
+    SIGNUP        : `${this.baseApiUrl}/signup`,
+    LOGIN         : `${this.baseApiUrl}/login`,
+    APP_STATUS    : `${this.baseApiUrl}/appstatus`,
   };
 
 
@@ -32,6 +33,11 @@ export class UserService {
         } else {
           throw new Error( 'Valid token not returned' );
         }
+        
+        // Save shop URL if it exists against this user
+        if ( res?.shop ) {
+          this.saveStoreUrl( res.shop );
+        }
       }),
       catchError(( error ) => {
         console.error( 'Login failed:', error );
@@ -44,9 +50,9 @@ export class UserService {
   signUp( data: any ): Observable<any> {
 
     const dataToSend = { 
-      email            : data?.email?.trim(),
+			name             : data?.name,
+      email            : data?.email,
 			password         : data?.password,
-			firstName        : data?.firstName?.trim(),
     };
 
     return this.http.post( this.API_URLS.SIGNUP, dataToSend ).pipe(map( res => res ));
@@ -55,6 +61,7 @@ export class UserService {
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('storeUrl');
   }
 
 
@@ -71,6 +78,38 @@ export class UserService {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+
+  setRedirectUrl( url: string ): void {
+    sessionStorage.setItem('redirectUrl', url);
+  }
+
+
+  getRedirectUrl(): string | null {
+    return sessionStorage.getItem('redirectUrl');
+  }
+
+
+  clearRedirectUrl(): void {
+    sessionStorage.removeItem('redirectUrl');
+  }
+
+
+  registerStore( shop: string ): Observable<any> {
+    const dataToSend = { shop };
+    return this.http.post( this.API_URLS.APP_STATUS, dataToSend ).pipe(map( res => res ));
+  }
+  
+
+  saveStoreUrl( storeUrl: string ): void {
+    localStorage.setItem( 'storeUrl', storeUrl );
+  }
+
+
+  getStoreUrl(): string | null {
+    const storeUrl = localStorage.getItem('storeUrl');
+    return storeUrl;
   }
 
 }

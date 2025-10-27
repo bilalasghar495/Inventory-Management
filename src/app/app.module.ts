@@ -22,6 +22,7 @@ import { HeaderComponent } from './shared/components/header/header.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MainLayoutComponent } from './components/main-layout/main-layout.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
+import { RegisterStoreComponent } from './components/register-store/register-store.component';
 
 // Material Modules
 import { MatCardModule } from '@angular/material/card';
@@ -47,6 +48,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     DashboardComponent,
     MainLayoutComponent,
     ToastComponent,
+    RegisterStoreComponent,
   ],
   imports: [
     BrowserModule,

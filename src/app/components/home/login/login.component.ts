@@ -25,6 +25,7 @@ export class LoginComponent {
   });
 
   showFormLoading: boolean = false;
+  showPassword   : boolean = false;
 
   onFormSubmit() {
     if ( this.form.valid ) {
@@ -40,9 +41,25 @@ export class LoginComponent {
 
       this.UserService.login( dataModel?.email, dataModel?.password ).subscribe({
         next: ( response ) => {
-          this.toastService.success('Login successful! Welcome back.');
+          this.toastService.success('Login successful!');
           this.showFormLoading = false;
-          this.router.navigate(['/main']);
+          
+          // Check if there's a redirect URL
+          const redirectUrl = this.UserService.getRedirectUrl();
+          
+          if ( redirectUrl ) {
+            // Clear the stored redirect URL
+            this.UserService.clearRedirectUrl();
+            // Navigate to the originally requested URL
+            this.router.navigateByUrl( redirectUrl );
+          } else {
+            // Navigate based on app registration status
+            if( response.appStatus === true ) {
+              this.router.navigate(['/main']);
+            } else {
+              this.router.navigate(['/register-store']);
+            }
+          }
         },
         error: ( error ) => {
           const errorMessage = error.status === 401 ? 'Invalid email or password. Please try again.' : 'Login failed. Please try again later.';
@@ -51,5 +68,10 @@ export class LoginComponent {
         }
       });
     }
+  }
+
+  
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 }

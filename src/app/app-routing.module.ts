@@ -8,6 +8,10 @@ import { SignupComponent } from './components/home/signup/signup.component';
 import { LoginComponent } from './components/home/login/login.component';
 import { MainLayoutComponent } from './components/main-layout/main-layout.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { RegisterStoreComponent } from './components/register-store/register-store.component';
+
+// Guards
+import { authGuard, authGuardChild } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -23,8 +27,15 @@ const routes: Routes = [
     component: ForgotPasswordComponent
   },
   {
+    path: 'register-store',
+    component: RegisterStoreComponent,
+    canActivate: [authGuard]
+  },
+  {
     path: 'main',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
+    canActivateChild: [authGuardChild],
     children: [
       {
         path: '',
@@ -40,6 +51,10 @@ const routes: Routes = [
         component: ReorderProductComponent
       }
     ]
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 

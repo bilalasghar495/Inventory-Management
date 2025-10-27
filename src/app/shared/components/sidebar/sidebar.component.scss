@@ -141,48 +141,51 @@
 
 @media ( max-width: 768px ) {
   .sidebar {
-    width: 70px;
-    padding: 20px 8px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    padding: 8px 16px;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 
     .logo-section {
-      flex-direction: column;
-      gap: 8px;
-
-      .logo-text {
-        font-size: 12px;
-        text-align: center;
-      }
+      display: none;
     }
 
     .menu-section {
+      flex-direction: row;
+      justify-content: space-around;
+      width: 100%;
+      gap: 8px;
+
       .menu-item {
+        flex: 1;
         padding: 12px 8px;
         justify-content: center;
         flex-direction: column;
         gap: 4px;
 
+        img {
+          width: 24px;
+          height: 24px;
+        }
+
         .menu-text {
           font-size: 10px;
           text-align: center;
+          white-space: nowrap;
         }
       }
     }
 
     .theme-toggle-section {
-      .theme-toggle {
-        flex-direction: column;
-        gap: 4px;
-
-        .theme-btn {
-          padding: 8px;
-          font-size: 11px;
-          gap: 4px;
-
-          span {
-            display: none;
-          }
-        }
-      }
+      display: none;
     }
   }
 }
