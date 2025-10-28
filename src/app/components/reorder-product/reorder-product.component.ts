@@ -1,4 +1,6 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Subject, merge } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 // Services
 import { ProductDataService } from '../../Services/product-data.service';
@@ -6,15 +8,17 @@ import { ProductDataService } from '../../Services/product-data.service';
 // Models
 import { IProductDetailModel } from '../../models/product.model';
 import { ToastService } from '../../Services/toast.service';
+import { WebsocketService } from '../../Services/websocket.service';
 
 @Component({
   selector: 'app-reorder-product',
   templateUrl: './reorder-product.component.html',
   styleUrl: './reorder-product.component.scss'
 })
-export class ReorderProductComponent implements OnInit {
+export class ReorderProductComponent implements OnInit, OnDestroy {
   readonly productDataService = inject( ProductDataService );
   readonly toastService       = inject( ToastService );
+  readonly websocketService   = inject( WebsocketService );
   
   readonly products           = signal<IProductDetailModel[]>([]);
   readonly filteredProducts   = signal<IProductDetailModel[]>([]);
@@ -36,12 +40,26 @@ export class ReorderProductComponent implements OnInit {
 
   searchTerm: string = '';
   
+  private destroy$ = new Subject<void>();
 
   constructor() { }
 
 
   ngOnInit(): void {
     this.fetchProductDetail();
+    
+    merge(
+      this.websocketService.listen('orderCreated'),
+      this.websocketService.listen('productUpdated')
+    )
+    .pipe(
+      debounceTime(500), // Wait 500ms after last event before refreshing
+      takeUntil(this.destroy$) // Unsubscribe when component is destroyed
+    )
+    .subscribe(( data ) => {
+      console.log( 'WebSocket event received, refreshing products...', data );
+      this.fetchProductDetail();
+    });
   }
 
 
@@ -91,5 +109,11 @@ export class ReorderProductComponent implements OnInit {
 
   private showError( message: string ): void {
     this.toastService.error( message );
+  }
+
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
