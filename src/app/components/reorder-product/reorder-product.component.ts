@@ -57,7 +57,6 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$) // Unsubscribe when component is destroyed
     )
     .subscribe(( data ) => {
-      console.log( 'WebSocket event received, refreshing products...', data );
       this.fetchProductDetail();
     });
   }

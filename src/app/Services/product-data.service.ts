@@ -22,17 +22,11 @@ export class ProductDataService {
     PRODUCTS: `${this.baseApiUrl}/restock-prediction`
   };
 
-  private headers = new HttpHeaders({
-    'ngrok-skip-browser-warning': 'true'
-  });
-
-
   constructor( private http: HttpClient ) { }
 
 
   getProducts( rangeDays1: number = 7, rangeDays2: number = 30 ): Observable<IProductDetailModel[]> {
     const storeUrl = this.userService.getStoreUrl();
-    console.log( 'storeUrl', storeUrl );
     const params = new HttpParams()
       .set('store', storeUrl ?? '')
       .set('limit', '250')
@@ -40,12 +34,10 @@ export class ProductDataService {
       .set('rangeDays2', rangeDays2.toString());
   
     return this.http.get<IProductApiResponse[]>(`${this.API_URLS.PRODUCTS}`, { 
-      headers: this.headers,
       params: params 
     }).pipe(
       map((res: IProductApiResponse[]) => {
         if (!Array.isArray(res)) return [];
-        console.log( 'res', res );
   
         return res.map((product) => {
           const displayName =

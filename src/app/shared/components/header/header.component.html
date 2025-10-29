@@ -8,14 +8,14 @@
   <!-- Right Section - Search, Notifications & Profile -->
   <div class="header-actions">
     <div class="relative profile-section">
-      <button type="button"(click)="toggleDropdown()" class="flex items-center gap-3 px-3 py-1 border rounded-xl transition-all duration-200 hover:bg-gray-50 focus:outline-none">
+      <button type="button"(click)="toggleDropdown()" class="flex items-center gap-2 px-2 py-1 border rounded-xl transition-all duration-200 hover:bg-gray-50 focus:outline-none">
         <img 
           src="https://ui-avatars.com/api/?name={{ userName }}&background=3B82F6&color=fff&size=128" 
           alt="User Avatar" 
           class="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
         />
         <div class="profile-info">
-          <div class="text-sm font-semibold text-gray-900 leading-tight">{{ userName }}</div>
+          <div class="text-sm font-semibold text-gray-900 leading-tight">{{ userName | uppercase }}</div>
           <!-- <div class="text-xs text-gray-600 leading-tight">{{ userRole }}</div> -->
         </div>
         <svg 
@@ -39,8 +39,9 @@
     <div *ngIf="isDropdownOpen" class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 origin-top-right animate-dropdown">
     
     <div class="px-4 py-3 border-b border-gray-100">
-      <p class="text-sm font-semibold text-gray-900">{{ userName }}</p>
-      <!-- <p class="text-xs text-gray-500 mt-0.5">{{ userRole }}</p> -->
+      <p class="text-sm font-semibold text-gray-900">
+        {{ userName | uppercase }}</p>
+      <p class="text-xs text-gray-500 mt-0.5">{{ userShop }}</p>
     </div>
 
     <div class="border-t border-gray-100 py-1">
