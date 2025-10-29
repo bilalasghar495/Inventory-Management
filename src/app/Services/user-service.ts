@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable, tap, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { IUser } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,12 @@ export class UserService {
     SIGNUP        : `${this.baseApiUrl}/signup`,
     LOGIN         : `${this.baseApiUrl}/login`,
     APP_STATUS    : `${this.baseApiUrl}/appstatus`,
+    GET_USER      : `${this.baseApiUrl}/user`,
   };
+
+  // Store user data in memory for quick access
+  private currentUser$ = new BehaviorSubject<IUser | null>(null);
+  public  user$        = this.currentUser$.asObservable();
 
 
   constructor( private http: HttpClient ) { }
@@ -38,6 +44,10 @@ export class UserService {
         if ( res?.shop ) {
           this.saveStoreUrl( res.shop );
         }
+        // Save user ID if it exists against this user
+        if ( res?.userId ) {
+          this.saveUserId( res.userId );
+        }
       }),
       catchError(( error ) => {
         console.error( 'Login failed:', error );
@@ -56,6 +66,20 @@ export class UserService {
     };
 
     return this.http.post( this.API_URLS.SIGNUP, dataToSend ).pipe(map( res => res ));
+  }
+
+
+  getUser( userId: string ): Observable<IUser> {
+    const params = new HttpParams().set( 'userId', userId );
+  
+    return this.http.get<IUser>(this.API_URLS.GET_USER, { params: params }).pipe(
+      tap((user) => {
+        this.currentUser$.next(user);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      })
+    );
   }
 
 
@@ -112,4 +136,14 @@ export class UserService {
     return storeUrl;
   }
 
+
+  saveUserId( userId: string ): void {
+    localStorage.setItem( 'userId', userId );
+  }
+  
+
+  getUserId(): string | null {
+    return localStorage.getItem( 'userId' );
+  }
+  
 }

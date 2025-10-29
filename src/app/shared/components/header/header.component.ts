@@ -1,4 +1,4 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../../Services/user-service';
 
@@ -7,16 +7,23 @@ import { UserService } from '../../../Services/user-service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
 
     private router      = inject( Router );
     private userService = inject( UserService );
 
-    userName       : string  = 'Bilal Asghar';
+    userName       : string  = '';
+    userEmail      : string  = '';
+    userShop       : string  = '';
     pageTitle      : string  = 'All Products';
     pageDescription: string  = 'Manage Product Restocking';
     searchQuery    : string  = '';
     isDropdownOpen : boolean = false;
+
+
+    ngOnInit() {
+        this.getUser();
+    }
 
     toggleDropdown() {
         this.isDropdownOpen = !this.isDropdownOpen;
@@ -28,6 +35,24 @@ export class HeaderComponent {
         const target = event.target as HTMLElement;
         if (!target.closest('.profile-section')) {
         this.isDropdownOpen = false;
+        }
+    }
+        
+
+    getUser() {
+        const userId = this.userService.getUserId();
+
+        if ( userId  ) {
+            this.userService.getUser( userId ).subscribe({
+              next: (res) => {
+                this.userName = res?.name;
+                this.userEmail = res?.email;
+                this.userShop = res?.shop || '';
+              },
+              error: (err) => {
+                console.error( 'Error fetching user:', err );
+              }
+            });
         }
     }
 
