@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { IUser } from '../models/user.model';
@@ -15,7 +15,7 @@ export class UserService {
   readonly API_URLS = {
     SIGNUP        : `${this.baseApiUrl}/signup`,
     LOGIN         : `${this.baseApiUrl}/login`,
-    APP_STATUS    : `${this.baseApiUrl}/appstatus`,
+    APP_STATUS    : `${this.baseApiUrl}/registerShop`,
     GET_USER      : `${this.baseApiUrl}/user`,
   };
 
@@ -120,8 +120,8 @@ export class UserService {
   }
 
 
-  registerStore( shop: string ): Observable<any> {
-    const dataToSend = { shop };
+  registerStore( shop: string, accessToken: string, apiKey: string, apiSecretKey: string ): Observable<any> {
+    const dataToSend = { shop, accessToken, apiKey, apiSecretKey };
     return this.http.post( this.API_URLS.APP_STATUS, dataToSend ).pipe(map( res => res ));
   }
   

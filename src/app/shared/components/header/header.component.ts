@@ -15,6 +15,7 @@ export class HeaderComponent implements OnInit {
     userName       : string  = '';
     userEmail      : string  = '';
     userShop       : string  = '';
+    
     pageTitle      : string  = 'All Products';
     pageDescription: string  = 'Manage Product Restocking';
     searchQuery    : string  = '';
