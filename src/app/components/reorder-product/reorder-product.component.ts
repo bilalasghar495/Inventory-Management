@@ -1,6 +1,4 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { Subject, merge } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 
 // Services
 import { ProductDataService } from '../../Services/product-data.service';
@@ -9,16 +7,18 @@ import { ProductDataService } from '../../Services/product-data.service';
 import { IProductDetailModel } from '../../models/product.model';
 import { ToastService } from '../../Services/toast.service';
 import { WebsocketService } from '../../Services/websocket.service';
+import { UserService } from '../../Services/user-service';
 
 @Component({
   selector: 'app-reorder-product',
   templateUrl: './reorder-product.component.html',
   styleUrl: './reorder-product.component.scss'
 })
-export class ReorderProductComponent implements OnInit, OnDestroy {
+export class ReorderProductComponent implements OnInit {
   readonly productDataService = inject( ProductDataService );
   readonly toastService       = inject( ToastService );
   readonly websocketService   = inject( WebsocketService );
+  readonly userService        = inject( UserService );
   
   readonly products           = signal<IProductDetailModel[]>([]);
   readonly filteredProducts   = signal<IProductDetailModel[]>([]);
@@ -40,25 +40,13 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
 
   searchTerm: string = '';
   
-  private destroy$ = new Subject<void>();
 
   constructor() { }
 
 
   ngOnInit(): void {
     this.fetchProductDetail();
-    
-    merge(
-      this.websocketService.listen('orderCreated'),
-      this.websocketService.listen('productUpdated')
-    )
-    .pipe(
-      debounceTime(500), // Wait 500ms after last event before refreshing
-      takeUntil(this.destroy$) // Unsubscribe when component is destroyed
-    )
-    .subscribe(( data ) => {
-      this.fetchProductDetail();
-    });
+    this.fetchShopData();
   }
 
 
@@ -95,6 +83,32 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   }
 
 
+  private fetchShopData(): void {
+    const shop = this.userService.getStoreUrl();
+    this.userService.getShopData( shop ?? '' ).subscribe({
+      next: (data: any) => {
+        
+        // Connect WebSocket with the shopDomain from the API response
+        if ( data?.shopDomain ) {
+          this.websocketService.connect( data.shopDomain );
+          
+          // Set up WebSocket event listeners after connection
+          this.websocketService.listen('orderCreated').subscribe(( orderData ) => {
+            this.fetchProductDetail();
+          });
+
+          this.websocketService.listen('productUpdated').subscribe(( productData ) => {
+            this.fetchProductDetail();
+          });
+        }
+      },
+      error: (error: any) => {
+        this.showError( error.message );
+      },
+    });
+  }
+
+
   onPageChange( page: number ): void {
     this.currentPage.set( page );
   }
@@ -108,11 +122,5 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
 
   private showError( message: string ): void {
     this.toastService.error( message );
-  }
-
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

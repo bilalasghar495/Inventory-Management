@@ -1,18 +1,20 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { io,Socket } from 'socket.io-client';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
+import { UserService } from './user-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketService {
 
-  private socket: Socket;
+  private socket!: Socket;
+  readonly userService = inject( UserService );
 
+  constructor() { }
 
-  constructor() { 
-    const shop = localStorage.getItem('storeUrl');
+  connect( shopDomain: string ): void {
 
     this.socket = io( environment.socketUrl, {
       transports: ['websocket'],
@@ -22,7 +24,7 @@ export class WebsocketService {
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       query: {
-        shop: shop,
+        shop: shopDomain,
       },
     });
 

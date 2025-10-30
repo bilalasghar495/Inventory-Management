@@ -17,6 +17,7 @@ export class UserService {
     LOGIN         : `${this.baseApiUrl}/login`,
     APP_STATUS    : `${this.baseApiUrl}/registerShop`,
     GET_USER      : `${this.baseApiUrl}/user`,
+    SHOP_DATA     : `${this.baseApiUrl}/shop`,
   };
 
   // Store user data in memory for quick access
@@ -81,6 +82,15 @@ export class UserService {
       })
     );
   }
+
+
+  getShopData( shop: string ): Observable<any> {
+    return this.http.post<any>(this.API_URLS.SHOP_DATA, { shop }).pipe(
+      map((res: any) => {
+        return res;
+      })
+    );
+  } 
 
 
   logout(): void {
