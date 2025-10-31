@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ToastTypeEnum } from '../shared/enums/toast.enum';
+import { ToastTypeEnum } from '../shared/enums/enum';
 
 export interface Toast {
   id: number;

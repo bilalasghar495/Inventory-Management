@@ -1,4 +1,4 @@
-<div class="fixed top-5 right-5 z-50 max-w-sm">
+<div class="fixed top-5 right-5 z-[9999] max-w-sm">
   @for ( toast of toasts; track toast.id ) {
     <div [ngClass]="getToastClasses(toast.type)" [@slideIn]>
         <div class="flex items-start">

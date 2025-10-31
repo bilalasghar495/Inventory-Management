@@ -1,11 +1,12 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // Services
 import { ProductDataService } from '../../Services/product-data.service';
+import { ToastService } from '../../Services/toast.service';
 
 // Models
 import { IProductDetailModel } from '../../models/product.model';
-import { ToastService } from '../../Services/toast.service';
 import { WebsocketService } from '../../Services/websocket.service';
 import { UserService } from '../../Services/user-service';
 
@@ -17,6 +18,7 @@ import { UserService } from '../../Services/user-service';
 export class ReorderProductComponent implements OnInit {
   readonly productDataService = inject( ProductDataService );
   readonly toastService       = inject( ToastService );
+  readonly snackBar           = inject( MatSnackBar );
   readonly websocketService   = inject( WebsocketService );
   readonly userService        = inject( UserService );
   
@@ -71,6 +73,7 @@ export class ReorderProductComponent implements OnInit {
 
     this.productDataService.getProducts( shortRangeDays, longRangeDays ).subscribe({
       next: (data: IProductDetailModel[]) => {
+        console.log( data );
         this.products.set( data );
         this.totalItems.set( data.length );
         this.isSkeletonLoading.set(false);
@@ -93,11 +96,15 @@ export class ReorderProductComponent implements OnInit {
           this.websocketService.connect( data.shopDomain );
           
           // Set up WebSocket event listeners after connection
-          this.websocketService.listen('orderCreated').subscribe(( orderData ) => {
+          this.websocketService.listen('orderCreated').subscribe(( productData ) => {
+            const productName = productData?.title || productData?.name || 'Unknown Product';
+            this.showSnackbar(`${productName} Order Created Successfully`);
             this.fetchProductDetail();
           });
 
           this.websocketService.listen('productUpdated').subscribe(( productData ) => {
+            const productName = productData?.title || productData?.name || 'Unknown Product';
+            this.showSnackbar(`${productName} Product Updated Successfully`);
             this.fetchProductDetail();
           });
         }
@@ -122,5 +129,14 @@ export class ReorderProductComponent implements OnInit {
 
   private showError( message: string ): void {
     this.toastService.error( message );
+  }
+
+
+  private showSnackbar( message: string ): void {
+    this.snackBar.open( message, 'Dismiss', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+    });
   }
 }

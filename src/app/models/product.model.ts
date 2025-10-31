@@ -1,3 +1,5 @@
+import { UrgencyLevelEnum } from "../shared/enums";
+
 // Flattened Model for Display (used in component)
 export interface IProductDetailModel {
     // Basic product info
@@ -22,6 +24,7 @@ export interface IProductDetailModel {
     recommendedAverageStock     : number;
     recommendedRestockShortRange: number;
     recommendedRestockLongRange : number;
+    urgencyLevel   : UrgencyLevelEnum;
 }
 
 // API Response Model (from backend) - matches the actual restock prediction API
@@ -48,4 +51,5 @@ export interface IProductApiResponse {
     recommendedAverageStock     : number;
     recommendedRestockShortRange: number;
     recommendedRestockLongRange : number;
+    urgencyLevel   : UrgencyLevelEnum;
 }

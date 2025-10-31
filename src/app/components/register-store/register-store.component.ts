@@ -17,16 +17,16 @@ export class RegisterStoreComponent {
     // URL pattern validator - accepts domain format only (e.g., testapplica.myshopify.com)
     private urlPattern = /^[\w\-]+(\.[\w\-]+)+$/;
 
-    readonly fc_storeUrl = new FormControl<string>('', [ Validators.required, Validators.pattern( this.urlPattern )]);
-    readonly fc_accessToken = new FormControl<string>('', [ Validators.required ]);
-    readonly fc_apiKey = new FormControl<string>('', [ Validators.required ]);
-    readonly fc_apiSecretKey = new FormControl<string>('', [ Validators.required ]);
+    readonly fc_storeUrl     = new FormControl<string>('', [ Validators.required, Validators.pattern( this.urlPattern )]);
+    readonly fc_accessToken  = new FormControl<string>('', [ Validators.required ]);
+    readonly fc_apiKey       = new FormControl<string>('');
+    readonly fc_apiSecretKey = new FormControl<string>('');
 
     readonly form = new FormGroup({
-        storeUrl: this.fc_storeUrl,
-        accessToken: new FormControl<string>('', [ Validators.required ]),
-        apiKey: new FormControl<string>('', [ Validators.required ]),
-        apiSecretKey: new FormControl<string>('', [ Validators.required ]),
+        storeUrl    : this.fc_storeUrl,
+        accessToken : this.fc_accessToken,
+        apiKey      : this.fc_apiKey,
+        apiSecretKey: this.fc_apiSecretKey,
     });
 
     showFormLoading  : boolean = false;

@@ -1,2 +1,2 @@
-export * from './toast.enum';
+export * from './enum';
 

@@ -117,10 +117,14 @@
                     <td class="Suggested-qty">{{ product.recommendedRestockLongRange | number:'1.0-2' }}</td>
                     <td class="Suggested-qty">{{ product.recommendedAverageStock | number:'1.0-2' }}</td>
                     <td>
-                      <!-- <span [class]="'urgency-' + product.urgencyLevel?.toLowerCase()">
+                      <span [class]="'urgency-' + product.urgencyLevel?.toLowerCase()">
                       {{ product.urgencyLevel }}
-                      </span> -->
+                      </span>
                     </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="100%" class="text-center">No products found</td>
                   </tr>
                 }
               }

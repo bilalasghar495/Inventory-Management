@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Toast, ToastService } from '../../../Services/toast.service';
-import { ToastTypeEnum } from '../../enums/toast.enum';
+import { ToastTypeEnum } from '../../enums/enum';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -9,8 +9,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./toast.component.scss']
 })
 export class ToastComponent implements OnInit, OnDestroy {
-  readonly toastService = inject(ToastService);
-  
+  readonly toastService = inject( ToastService );
   readonly ToastTypeEnum = ToastTypeEnum;
   
   toasts: Toast[] = [];

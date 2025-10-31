@@ -30,6 +30,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 // Interceptors
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -61,7 +62,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     MatMenuModule,
     MatIconModule,
     MatButtonModule,
-    MatDividerModule
+    MatDividerModule,
+    MatSnackBarModule
   ],
   providers: [
     provideClientHydration(),
