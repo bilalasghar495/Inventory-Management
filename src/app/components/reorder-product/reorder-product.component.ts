@@ -1,5 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 // Services
 import { ProductDataService } from '../../Services/product-data.service';
@@ -21,6 +22,7 @@ export class ReorderProductComponent implements OnInit {
   readonly snackBar           = inject( MatSnackBar );
   readonly websocketService   = inject( WebsocketService );
   readonly userService        = inject( UserService );
+  readonly router             = inject( Router );
   
   readonly products           = signal<IProductDetailModel[]>([]);
   readonly filteredProducts   = signal<IProductDetailModel[]>([]);
@@ -106,6 +108,10 @@ export class ReorderProductComponent implements OnInit {
             const productName = productData?.title || productData?.name || 'Unknown Product';
             this.showSnackbar(`${productName} Product Updated Successfully`);
             this.fetchProductDetail();
+          });
+
+          this.websocketService.listen('appUninstalled').subscribe(() => {
+            this.router.navigate(['/register-store'], { queryParams: { uninstalled: 'true' } });
           });
         }
       },

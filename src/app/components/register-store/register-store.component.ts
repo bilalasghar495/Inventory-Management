@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../Services/toast.service';
 import { UserService } from '../../Services/user-service';
 
@@ -9,8 +9,9 @@ import { UserService } from '../../Services/user-service';
   templateUrl: './register-store.component.html',
   styleUrl: './register-store.component.scss'
 })
-export class RegisterStoreComponent {
+export class RegisterStoreComponent implements OnInit, OnDestroy {
     readonly router       = inject( Router );
+    readonly route        = inject( ActivatedRoute );
     readonly toastService = inject( ToastService );
     readonly UserService  = inject( UserService );
 
@@ -29,11 +30,40 @@ export class RegisterStoreComponent {
         apiSecretKey: this.fc_apiSecretKey,
     });
 
-    showFormLoading  : boolean = false;
-    showInstallButton: boolean = false;
-    installUrl       : string  = '';
+    showFormLoading      : boolean = false;
+    showReinstallAppAlert: boolean = false;
+    installUrl           : string  = '';
+
+    private alertTimer   : ReturnType<typeof setTimeout> | null = null;
 
     constructor() {}
+
+    ngOnInit(): void {
+        // Check if redirected from app uninstall
+        this.route.queryParams.subscribe( params => {
+            if ( params['uninstalled'] === 'true' ) {
+                this.showReinstallAppAlert = true;
+                this.autoHideAlert();
+            }
+        });
+    }
+
+    ngOnDestroy(): void {
+        if ( this.alertTimer ) {
+            clearTimeout( this.alertTimer );
+        }
+    }
+
+    private autoHideAlert(): void {
+        // Clear any existing timer
+        if ( this.alertTimer ) {
+            clearTimeout( this.alertTimer );
+        }
+        // Auto-hide alert after 5 seconds
+        this.alertTimer = setTimeout(() => {
+            this.showReinstallAppAlert = false;
+        }, 5000);
+    }
 
     
     onFormSubmit() {
@@ -60,8 +90,9 @@ export class RegisterStoreComponent {
                 this.router.navigate(['/main']);
                 } else {
                 // App is not installed - show install button with URL
-                this.showInstallButton = true;
+                this.showReinstallAppAlert = true;
                 this.installUrl = `${response.installationUrl}/shopify-oauth/init?shop=${formData.storeUrl}&userId=${response.userId}`;
+                this.autoHideAlert();
                 }
             },
             error: ( error ) => {
@@ -79,9 +110,6 @@ export class RegisterStoreComponent {
     }
 
 
-    onDismiss() {
-        this.showInstallButton = false;
-    }
 
 
     onSkip() {
