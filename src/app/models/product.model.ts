@@ -24,7 +24,7 @@ export interface IProductDetailModel {
     recommendedAverageStock     : number;
     recommendedRestockShortRange: number;
     recommendedRestockLongRange : number;
-    urgencyLevel   : UrgencyLevelEnum;
+    urgencyLevel                : UrgencyLevelEnum;
 }
 
 // API Response Model (from backend) - matches the actual restock prediction API
@@ -51,5 +51,9 @@ export interface IProductApiResponse {
     recommendedAverageStock     : number;
     recommendedRestockShortRange: number;
     recommendedRestockLongRange : number;
-    urgencyLevel   : UrgencyLevelEnum;
+    urgencyLevel                : UrgencyLevelEnum;
+}
+
+export interface IShopDataModel {
+    shopDomain: string;
 }

@@ -5,11 +5,18 @@ import { Router } from '@angular/router';
 // Services
 import { ProductDataService } from '../../Services/product-data.service';
 import { ToastService } from '../../Services/toast.service';
+import { UserService } from '../../Services/user-service';
+import { WebsocketService } from '../../Services/websocket.service';
 
 // Models
-import { IProductDetailModel } from '../../models/product.model';
-import { WebsocketService } from '../../Services/websocket.service';
-import { UserService } from '../../Services/user-service';
+import { IProductDetailModel, IShopDataModel } from '../../models/product.model';
+
+// RxJS
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
+// Enums
+import { UrgencyLevelEnum } from '../../shared/enums/enum';
 
 @Component({
   selector: 'app-reorder-product',
@@ -24,25 +31,53 @@ export class ReorderProductComponent implements OnInit {
   readonly userService        = inject( UserService );
   readonly router             = inject( Router );
   
-  readonly products           = signal<IProductDetailModel[]>([]);
-  readonly filteredProducts   = signal<IProductDetailModel[]>([]);
-  readonly isSkeletonLoading  = signal<boolean>(false);
+  readonly products          = signal<IProductDetailModel[]>([]);
+  readonly isSkeletonLoading = signal<boolean>(false);
+  readonly urgencyLevel      = signal<UrgencyLevelEnum | null>(null);
+  readonly searchTerm        = signal<string>('');
   
   // Pagination properties (as signals)
   readonly currentPage  = signal<number>(1);
   readonly itemsPerPage = signal<number>(10);
   readonly totalItems   = signal<number>(0);
 
-  shortRange = signal<number>(7);
-  longRange = signal<number>(30);
+  readonly shortRange   = signal<number>(7);
+  readonly longRange    = signal<number>(30);
+  readonly futureDays   = signal<string>('30');
+  
+  private readonly searchTermSubject = new Subject<string>();
+
+  // Filtered products based on search term and urgency level
+  readonly filteredProducts = computed(() => {
+    const search = this.searchTerm().toLowerCase().trim();
+    const urgencyLevel = this.urgencyLevel();
+    
+    let filtered = this.products();
+    
+    // Filter by urgency level if selected
+    if ( urgencyLevel ) {
+      filtered = filtered.filter(product => product.urgencyLevel === urgencyLevel);
+    }
+    
+    // Filter by search term if provided
+    if ( search ) {
+      filtered = filtered.filter( product => {
+        const matchesName = product.productName.toLowerCase().includes( search );
+        const matchesUrgency = product.urgencyLevel?.toLowerCase().includes( search );
+        return matchesName || matchesUrgency;
+      });
+    }
+    
+    return filtered;
+  });
   
   readonly paginatedProducts = computed(() => {
     const start = ( this.currentPage() - 1 ) * this.itemsPerPage();
     const end = start + this.itemsPerPage();
-    return this.products().slice(start, end);
+    return this.filteredProducts().slice(start, end);
   });
-
-  searchTerm: string = '';
+  
+  readonly totalFilteredItems = computed(() => this.filteredProducts().length);
   
 
   constructor() { }
@@ -51,6 +86,11 @@ export class ReorderProductComponent implements OnInit {
   ngOnInit(): void {
     this.fetchProductDetail();
     this.fetchShopData();
+
+    // Debounce the search term to prevent multiple requests
+    this.searchTermSubject.pipe( debounceTime(300), distinctUntilChanged() ).subscribe(( searchValue ) => {
+        this.onSearchChange( searchValue );
+    });
   }
 
 
@@ -69,11 +109,12 @@ export class ReorderProductComponent implements OnInit {
   // Fetch product detail
   private fetchProductDetail(): void {
     const shortRangeDays = this.shortRange();
-    const longRangeDays = this.longRange();
+    const longRangeDays  = this.longRange();
+    const futureDays     = this.futureDays();
 
     this.isSkeletonLoading.set(true);
 
-    this.productDataService.getProducts( shortRangeDays, longRangeDays ).subscribe({
+    this.productDataService.getProducts( shortRangeDays, longRangeDays, futureDays ).subscribe({
       next: (data: IProductDetailModel[]) => {
         console.log( data );
         this.products.set( data );
@@ -91,7 +132,7 @@ export class ReorderProductComponent implements OnInit {
   private fetchShopData(): void {
     const shop = this.userService.getStoreUrl();
     this.userService.getShopData( shop ?? '' ).subscribe({
-      next: (data: any) => {
+      next: ( data: IShopDataModel ) => {
         
         // Connect WebSocket with the shopDomain from the API response
         if ( data?.shopDomain ) {
@@ -122,6 +163,17 @@ export class ReorderProductComponent implements OnInit {
   }
 
 
+  onUrgencyLevelChange( value: string ): void {
+    if (value === '') {
+      this.urgencyLevel.set(null);
+    } else {
+      this.urgencyLevel.set( value as UrgencyLevelEnum );
+    }
+    // Reset to first page when filter changes
+    this.currentPage.set(1);
+  }
+
+
   onPageChange( page: number ): void {
     this.currentPage.set( page );
   }
@@ -130,6 +182,18 @@ export class ReorderProductComponent implements OnInit {
   onItemsPerPageChange( itemsPerPage: number ): void {
     this.itemsPerPage.set( itemsPerPage );
     this.currentPage.set(1);
+  }
+
+
+  onSearchChange( searchValue: string ): void {
+    this.searchTerm.set( searchValue );
+    this.currentPage.set(1);
+  }
+
+
+  onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchTermSubject.next(input.value);
   }
 
 
