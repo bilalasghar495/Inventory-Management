@@ -130,7 +130,7 @@ export class UserService {
   }
 
 
-  registerStore( shop: string, accessToken: string, apiKey: string, apiSecretKey: string ): Observable<any> {
+  registerStore( shop: string, accessToken: string, apiKey?: string, apiSecretKey?: string ): Observable<any> {
     const dataToSend = { shop, accessToken, apiKey, apiSecretKey };
     return this.http.post( this.API_URLS.APP_STATUS, dataToSend ).pipe(map( res => res ));
   }

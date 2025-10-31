@@ -37,6 +37,7 @@ export class ProductDataService {
       params: params 
     }).pipe(
       map((res: IProductApiResponse[]) => {
+        console.log( 'product data', res );
         if (!Array.isArray(res)) return [];
   
         return res.map((product) => {
@@ -59,6 +60,7 @@ export class ProductDataService {
             recommendedAverageStock: product.recommendedAverageStock,
             recommendedRestockShortRange: product.recommendedRestockShortRange,
             recommendedRestockLongRange: product.recommendedRestockLongRange,
+            urgencyLevel: product.urgencyLevel,
           };
         });
       })
