@@ -9,48 +9,48 @@
               type="text" 
               placeholder="Search" 
               class="search-input"
+              [value]="searchTerm()"
+              (input)="onSearchInput($event)"
             />
           </div>
           
           <div class="actions-container">
 
-
             <select
-            id="shortRange"
-            (change)="onShortRangeChange($any($event.target).value)"
-            class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors"
-            >              
-              <option value="" disabled>Select a period</option>
-              <option value="7" selected> per day sold 7 days</option>
-              <option value="1"> per day sold 1 days</option>
-              <option value="14"> per day sold 14 days</option>
-              <option value="30"> per day sold 30 days</option>
+              id="shortRange"
+              (change)="onShortRangeChange($any($event.target).value)" 
+              class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors"
+              >              
+                <option value="" disabled>Select a period</option>
+                <option value="7" selected> per day sold 7 days</option>
+                <option value="1"> per day sold 1 days</option>
+                <option value="14"> per day sold 14 days</option>
+                <option value="30"> per day sold 30 days</option>
             </select>
 
             <select 
-            id="longRange"
-            (change)="onLongRangeChange($any($event.target).value)"
-            class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors"
-            >
-              <option value="" disabled>Select a period</option>
-              <option value="7"> per day sold 7 days</option>
-              <option value="14"> per day sold 14 days</option>
-              <option value="30" selected> per day sold 30 days</option>
+              id="longRange"
+              (change)="onLongRangeChange($any($event.target).value)"
+              class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors"
+              >
+                <option value="" disabled>Select a period</option>
+                <option value="7"> per day sold 7 days</option>
+                <option value="14"> per day sold 14 days</option>
+                <option value="30" selected> per day sold 30 days</option>
             </select>
 
-            <!-- <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
-              <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"/>
-              </svg>
-              Filter
-            </button> -->
-              
-            <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
-              <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.335 6.514 6.91 1.464a1.122 1.122 0 0 0-1.818 0l-3.426 5.05a.988.988 0 0 0 .91 1.511h6.851a.988.988 0 0 0 .91-1.511Zm-8.67 6.972 3.426 5.05a1.121 1.121 0 0 0 1.818 0l3.426-5.05a.988.988 0 0 0-.909-1.511H2.574a.987.987 0 0 0-.909 1.511Z"/>
-              </svg>
-              Sort
-            </button>
+            <select 
+              id="urgencyLevel"
+              [value]="urgencyLevel() || ''"
+              (change)="onUrgencyLevelChange($any($event.target).value)"
+              class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors"
+              >
+                <option value="">Sort by urgency level</option>
+                <option value="LOW">Sort by Low</option>
+                <option value="MEDIUM">Sort by Medium</option>
+                <option value="HIGH">Sort by High</option>
+                <option value="CRITICAL">Sort by Critical</option>
+            </select>
 
           <button type="button" class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-black transition-colors">
             <svg class="w-4 h-4 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
@@ -135,7 +135,7 @@
         <app-pagination
           [currentPage]        = "currentPage()"
           [itemsPerPage]       = "itemsPerPage()"
-          [totalItems]         = "totalItems()"
+          [totalItems]         = "totalFilteredItems()"
           (pageChange)         = "onPageChange($event)"
           (itemsPerPageChange) = "onItemsPerPageChange($event)"
           >

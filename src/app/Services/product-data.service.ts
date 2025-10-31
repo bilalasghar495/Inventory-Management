@@ -25,13 +25,14 @@ export class ProductDataService {
   constructor( private http: HttpClient ) { }
 
 
-  getProducts( rangeDays1: number = 7, rangeDays2: number = 30 ): Observable<IProductDetailModel[]> {
+  getProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30' ): Observable<IProductDetailModel[]> {
     const storeUrl = this.userService.getStoreUrl();
     const params = new HttpParams()
       .set('store', storeUrl ?? '')
       .set('limit', '250')
       .set('rangeDays1', rangeDays1.toString())
-      .set('rangeDays2', rangeDays2.toString());
+      .set('rangeDays2', rangeDays2.toString())
+      .set('futureDays', futureDays );
   
     return this.http.get<IProductApiResponse[]>(`${this.API_URLS.PRODUCTS}`, { 
       params: params 
