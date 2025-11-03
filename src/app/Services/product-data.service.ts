@@ -47,22 +47,23 @@ export class ProductDataService {
             product.variantName && product.variantName !== 'Default Title' ? `${product.productName} - ${product.variantName}` : product.productName;
   
           return {
-            productId: product.productId,
-            productName: displayName,
-            productImage: product.productImage,
-            variantId: product.variantId,
-            variantName: product.variantName,
-            availableStock: product.availableStock,
-            totalInventory: product.totalInventory,
-            incomingStock: product.incomingStock,
-            shortRangeSales: product.shortRangeSales,
-            longRangeSales: product.longRangeSales,
-            perDaySoldShortRange: product.perDaySoldShortRange,
-            perDaySoldLongRange: product.perDaySoldLongRange,
-            recommendedAverageStock: product.recommendedAverageStock,
+            productId                   : product.productId,
+            productName                 : displayName,
+            productImage                : product.productImage,
+            variantId                   : product.variantId,
+            variantName                 : product.variantName,
+            availableStock              : product.availableStock,
+            totalInventory              : product.totalInventory,
+            incomingStock               : product.incomingStock,
+            shortRangeSales             : product.shortRangeSales,
+            longRangeSales              : product.longRangeSales,
+            perDaySoldShortRange        : product.perDaySoldShortRange,
+            perDaySoldLongRange         : product.perDaySoldLongRange,
+            recommendedAverageStock     : product.recommendedAverageStock,
             recommendedRestockShortRange: product.recommendedRestockShortRange,
-            recommendedRestockLongRange: product.recommendedRestockLongRange,
-            urgencyLevel: product.urgencyLevel,
+            recommendedRestockLongRange : product.recommendedRestockLongRange,
+            urgencyLevel                : product.urgencyLevel,
+            sku                         : product.sku,
           };
         });
       })

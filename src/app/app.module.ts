@@ -31,6 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Interceptors
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -63,7 +64,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     MatIconModule,
     MatButtonModule,
     MatDividerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTooltipModule
   ],
   providers: [
     provideClientHydration(),

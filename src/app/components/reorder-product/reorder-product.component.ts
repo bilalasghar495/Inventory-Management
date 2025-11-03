@@ -38,7 +38,7 @@ export class ReorderProductComponent implements OnInit {
   
   // Pagination properties (as signals)
   readonly currentPage  = signal<number>(1);
-  readonly itemsPerPage = signal<number>(10);
+  readonly itemsPerPage = signal<number>(50);
   readonly totalItems   = signal<number>(0);
 
   readonly shortRange   = signal<number>(7);
@@ -110,7 +110,7 @@ export class ReorderProductComponent implements OnInit {
 
 
   // Fetch product detail
-  private fetchProductDetail(): void {
+  public fetchProductDetail(): void {
     const shortRangeDays = this.shortRange();
     const longRangeDays  = this.longRange();
     const futureDays     = this.futureDays();
@@ -118,11 +118,11 @@ export class ReorderProductComponent implements OnInit {
     this.isSkeletonLoading.set(true);
 
     this.productDataService.getProducts( shortRangeDays, longRangeDays, futureDays ).subscribe({
-      next: (data: IProductDetailModel[]) => {
+      next: ( data: IProductDetailModel[] ) => {
         console.log( data );
         this.products.set( data );
         this.totalItems.set( data.length );
-        this.isSkeletonLoading.set(false);
+        this.isSkeletonLoading.set( false );
       },
       error: (error: any) => {
         this.showError( error.message );
@@ -172,13 +172,13 @@ export class ReorderProductComponent implements OnInit {
           this.websocketService.listen('orderCreated').subscribe(( productData ) => {
             const productName = productData?.title || productData?.name || 'Unknown Product';
             this.showSnackbar(`${productName} Order Created Successfully`);
-            this.fetchProductDetail();
+            // this.fetchProductDetail();
           });
 
           this.websocketService.listen('productUpdated').subscribe(( productData ) => {
             const productName = productData?.title || productData?.name || 'Unknown Product';
             this.showSnackbar(`${productName} Product Updated Successfully`);
-            this.fetchProductDetail();
+            // this.fetchProductDetail();
           });
 
           this.websocketService.listen('appUninstalled').subscribe(() => {
@@ -238,5 +238,21 @@ export class ReorderProductComponent implements OnInit {
       horizontalPosition: 'center',
       verticalPosition: 'bottom',
     });
+  }
+
+  getUrgencyTooltip( urgencyLevel: string | null | undefined ): string {
+    
+    switch ( urgencyLevel?.toUpperCase() ) {
+      case 'LOW':
+        return 'Sufficient stock, no immediate restock needed.';
+      case 'MEDIUM':
+        return 'Restock in the near future.';
+      case 'HIGH':
+        return 'Restock soon to avoid shortage.';
+      case 'CRITICAL':
+        return 'Your average recommended stock is below the critical leve.';
+      default:
+        return 'No urgency level found.';
+    }
   }
 }
