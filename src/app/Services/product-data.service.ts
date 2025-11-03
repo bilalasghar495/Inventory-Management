@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, pipe } from 'rxjs';
 
 // Models
 import { IProductDetailModel, IProductApiResponse } from '../models/product.model';
@@ -19,7 +19,8 @@ export class ProductDataService {
   
   // API URLS
   readonly API_URLS = {
-    PRODUCTS: `${this.baseApiUrl}/restock-prediction`
+    PRODUCTS  : `${this.baseApiUrl}/restock-prediction`,
+    CSV_EXPORT: `${this.baseApiUrl}/export/csv`
   };
 
   constructor( private http: HttpClient ) { }
@@ -67,5 +68,24 @@ export class ProductDataService {
       })
     );
   }
-  
+
+
+  exportToCsv( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30' ): Observable<Blob> {
+    const storeUrl = this.userService.getStoreUrl();
+    const body = {
+      store     : storeUrl ?? '',
+      limit     : '250',
+      rangeDays1: rangeDays1.toString(),
+      rangeDays2: rangeDays2.toString(),
+      futureDays: futureDays
+    };
+    
+    return this.http.post(`${this.API_URLS.CSV_EXPORT}`, body, {
+      responseType: 'blob'
+    }).pipe(
+      map(( res: Blob ) => {
+        return res;
+      })
+    );
+  }
 }
