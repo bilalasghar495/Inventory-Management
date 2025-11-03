@@ -1,5 +1,6 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 import { UserService } from '../../../Services/user-service';
 
 @Component({
@@ -16,14 +17,31 @@ export class HeaderComponent implements OnInit {
     userEmail      : string  = '';
     userShop       : string  = '';
     
-    pageTitle      : string  = 'All Products';
-    pageDescription: string  = 'Manage Product Restocking';
+    pageTitle      : string  = '';
+    pageDescription: string  = '';
+
     searchQuery    : string  = '';
     isDropdownOpen : boolean = false;
 
-
     ngOnInit() {
         this.getUser();
+        this.updatePageTitle();
+        
+        // Listen for route changes
+        this.router.events.pipe(filter( event => event instanceof NavigationEnd )).subscribe(() => this.updatePageTitle());
+    }
+
+    private updatePageTitle() {
+        const currentUrl = this.router.url;
+        
+        // Check which route is active
+        if ( currentUrl.includes('/dashboard') ) {
+            this.pageTitle = 'Dashboard';
+            this.pageDescription = 'Overview of your inventory';
+        } else if ( currentUrl.includes('/items') ) {
+            this.pageTitle = 'All Products';
+            this.pageDescription = 'Manage Product Restocking';
+        }
     }
 
     toggleDropdown() {
