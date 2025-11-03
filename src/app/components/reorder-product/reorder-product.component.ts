@@ -48,7 +48,7 @@ export class ReorderProductComponent implements OnInit {
   private readonly searchTermSubject = new Subject<string>();
 
   // Filtered products based on search term and urgency level
-  readonly filteredProducts = computed(() => {
+  readonly filteredProducts = computed( () => {
     const search = this.searchTerm().toLowerCase().trim();
     const urgencyLevel = this.urgencyLevel();
     
@@ -56,7 +56,10 @@ export class ReorderProductComponent implements OnInit {
     
     // Filter by urgency level if selected
     if ( urgencyLevel ) {
-      filtered = filtered.filter(product => product.urgencyLevel === urgencyLevel);
+      filtered = filtered.filter( product => {
+        // Case-insensitive comparison and handle null/undefined
+        return product.urgencyLevel && product.urgencyLevel.toUpperCase() === urgencyLevel.toUpperCase();
+      });
     }
     
     // Filter by search term if provided
