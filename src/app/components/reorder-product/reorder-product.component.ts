@@ -129,6 +129,33 @@ export class ReorderProductComponent implements OnInit {
   }
 
 
+  public exportToCsv(): void {
+    const shortRangeDays = this.shortRange();
+    const longRangeDays  = this.longRange();
+    const futureDays     = this.futureDays();
+
+    this.productDataService.exportToCsv( shortRangeDays, longRangeDays, futureDays ).subscribe({
+      next: ( blob: Blob ) => {
+        // Create a download link and trigger it
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `inventory-export-${new Date().getTime()}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        this.showSnackbar( 'CSV Exported Successfully' );
+      },
+      error: ( error: any ) => {
+        console.log( error );
+        this.showError( error.message || 'Failed to export CSV' );
+      },
+    });
+  }
+
+
   private fetchShopData(): void {
     const shop = this.userService.getStoreUrl();
     this.userService.getShopData( shop ?? '' ).subscribe({
