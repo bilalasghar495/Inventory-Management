@@ -30,10 +30,9 @@ export class ProductDataService {
     const storeUrl = this.userService.getStoreUrl();
     const params = new HttpParams()
       .set('store', storeUrl ?? '')
-      .set('limit', '250')
       .set('rangeDays1', rangeDays1.toString())
       .set('rangeDays2', rangeDays2.toString())
-      .set('futureDays', futureDays );
+      .set('futureDays', futureDays )
   
     return this.http.get<IProductApiResponse[]>(`${this.API_URLS.PRODUCTS}`, { 
       params: params 

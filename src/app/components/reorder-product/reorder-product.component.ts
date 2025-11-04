@@ -65,9 +65,11 @@ export class ReorderProductComponent implements OnInit {
     // Filter by search term if provided
     if ( search ) {
       filtered = filtered.filter( product => {
-        const matchesName = product.productName.toLowerCase().includes( search );
-        const matchesUrgency = product.urgencyLevel?.toLowerCase().includes( search );
-        return matchesName || matchesUrgency;
+        const matchesName    = product.productName.toLowerCase().includes( search );
+        // const matchesUrgency = product.urgencyLevel?.toLowerCase().includes( search );
+        const matchesSku     = product.sku?.toLowerCase().includes( search );
+
+        return matchesName || matchesSku;
       });
     }
     
