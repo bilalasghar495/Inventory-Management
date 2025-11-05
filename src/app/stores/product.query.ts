@@ -39,12 +39,7 @@ export class ProductQuery extends Query<ProductState> {
       return false;
     }
 
-    return (
-      cacheParams.shortRange === shortRange &&
-      cacheParams.longRange === longRange &&
-      cacheParams.futureDays === futureDays &&
-      this.products.length > 0
-    );
+    return ( cacheParams.shortRange === shortRange && cacheParams.longRange === longRange && cacheParams.futureDays === futureDays && this.products.length > 0 );
   }
 }
 

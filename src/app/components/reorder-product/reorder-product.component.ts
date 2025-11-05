@@ -114,7 +114,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
         this.onSearchChange( searchValue );
       });
 
-    // Fetch product detail - will use cache if valid for current store, otherwise fetch fresh
+    // Fetch product detail (will use cache if available)
     this.fetchProductDetail();
     this.fetchShopData();
   }
@@ -144,7 +144,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     const longRangeDays  = this.longRange();
     const futureDays     = this.futureDays();
 
-    this.productDataService.getProducts( shortRangeDays, longRangeDays, futureDays, forceRefresh).pipe(takeUntil(this.destroy$) ).subscribe({
+    this.productDataService.getProducts( shortRangeDays, longRangeDays, futureDays, forceRefresh ).pipe(takeUntil(this.destroy$) ).subscribe({
         next: (data: IProductDetailModel[]) => {
           console.log('Product data loaded', data);
           // Data is automatically synced via store subscription

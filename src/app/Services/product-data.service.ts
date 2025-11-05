@@ -60,7 +60,7 @@ export class ProductDataService {
   }
 
 
-  private fetchProductsFromApi( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30' ): Observable<IProductDetailModel[]> {
+  private fetchProductsFromApi( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15' ): Observable<IProductDetailModel[]> {
     const storeUrl = this.userService.getStoreUrl();
     const params = new HttpParams()
       .set('store', storeUrl ?? '')
@@ -114,7 +114,7 @@ export class ProductDataService {
   }
 
 
-  exportToCsv( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30' ): Observable<Blob> {
+  exportToCsv( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15' ): Observable<Blob> {
     const storeUrl = this.userService.getStoreUrl();
     const body = {
       store     : storeUrl ?? '',
