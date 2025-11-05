@@ -156,6 +156,18 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   }
 
 
+  public refreshProducts(): void {
+    this.productDataService.refreshProducts( this.shortRange(), this.longRange(), this.futureDays() ).subscribe({
+      next: (data: IProductDetailModel[]) => {
+        this.showSnackbar('Products refreshed successfully');
+      },
+      error: (error: any) => {
+        this.showError(error.message);
+      },
+    });
+  }
+
+
   public exportToCsv(): void {
     const shortRangeDays = this.shortRange();
     const longRangeDays  = this.longRange();
