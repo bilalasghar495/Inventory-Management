@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -11,11 +11,14 @@ import { ToastService } from '../../Services/toast.service';
 import { UserService } from '../../Services/user-service';
 import { WebsocketService } from '../../Services/websocket.service';
 
+// Akita Store
+import { ProductQuery } from '../../stores/product.query';
+
 // Models
 import { IProductDetailModel, IShopDataModel } from '../../models/product.model';
 
 // RxJS
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 // Enums
@@ -28,8 +31,9 @@ import { UrgencyLevelEnum } from '../../shared/enums/enum';
   templateUrl: './reorder-product.component.html',
   styleUrl: './reorder-product.component.scss'
 })
-export class ReorderProductComponent implements OnInit {
+export class ReorderProductComponent implements OnInit, OnDestroy {
   readonly productDataService = inject( ProductDataService );
+  readonly productQuery       = inject( ProductQuery );
   readonly toastService       = inject( ToastService );
   readonly snackBar           = inject( MatSnackBar );
   readonly websocketService   = inject( WebsocketService );
@@ -51,6 +55,7 @@ export class ReorderProductComponent implements OnInit {
   readonly futureDays   = signal<string>('30');
   
   private readonly searchTermSubject = new Subject<string>();
+  private readonly destroy$          = new Subject<void>();
 
   // Filtered products based on search term and urgency level
   readonly filteredProducts = computed( () => {
@@ -90,52 +95,64 @@ export class ReorderProductComponent implements OnInit {
   readonly totalFilteredItems = computed(() => this.filteredProducts().length);
   
 
-  constructor() { }
-
+  constructor() {}
 
   ngOnInit(): void {
-    this.fetchProductDetail();
-    this.fetchShopData();
+    // Subscribe to Akita store products
+    this.productQuery.products$.pipe(takeUntil(this.destroy$)).subscribe( ( products ) => {
+        this.products.set( products );
+        this.totalItems.set( products.length );
+      });
+
+    // Subscribe to Akita store loading state
+    this.productQuery.loading$.pipe(takeUntil(this.destroy$)).subscribe( ( loading ) => {
+        this.isSkeletonLoading.set( loading );
+    });
 
     // Debounce the search term to prevent multiple requests
-    this.searchTermSubject.pipe( debounceTime(300), distinctUntilChanged() ).subscribe(( searchValue ) => {
+    this.searchTermSubject.pipe( debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$) ).subscribe(( searchValue: string ) => {
         this.onSearchChange( searchValue );
-    });
+      });
+
+    // Fetch product detail (will use cache if available)
+    this.fetchProductDetail();
+    this.fetchShopData();
+  }
+
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
   onShortRangeChange( value: string ): void {
     this.shortRange.set(+value);
-    this.fetchProductDetail();
+    this.fetchProductDetail( true );
   }
   
 
   onLongRangeChange(value: string): void {
     this.longRange.set(+value);
-    this.fetchProductDetail();
+    this.fetchProductDetail( true );
   }
 
 
   // Fetch product detail
-  public fetchProductDetail(): void {
+  public fetchProductDetail( forceRefresh: boolean = false ): void {
     const shortRangeDays = this.shortRange();
     const longRangeDays  = this.longRange();
     const futureDays     = this.futureDays();
 
-    this.isSkeletonLoading.set(true);
-
-    this.productDataService.getProducts( shortRangeDays, longRangeDays, futureDays ).subscribe({
-      next: ( data: IProductDetailModel[] ) => {
-        console.log( data );
-        this.products.set( data );
-        this.totalItems.set( data.length );
-        this.isSkeletonLoading.set( false );
-      },
-      error: (error: any) => {
-        this.showError( error.message );
-        this.isSkeletonLoading.set( false );
-      },
-    });
+    this.productDataService.getProducts( shortRangeDays, longRangeDays, futureDays, forceRefresh).pipe(takeUntil(this.destroy$) ).subscribe({
+        next: (data: IProductDetailModel[]) => {
+          console.log('Product data loaded', data);
+          // Data is automatically synced via store subscription
+        },
+        error: (error: any) => {
+          this.showError(error.message);
+        },
+      });
   }
 
 

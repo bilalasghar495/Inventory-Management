@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map, Observable, pipe } from 'rxjs';
+import { map, Observable, of, pipe } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 // Models
 import { IProductDetailModel, IProductApiResponse } from '../models/product.model';
@@ -9,11 +10,17 @@ import { IProductDetailModel, IProductApiResponse } from '../models/product.mode
 import { environment } from '../../environments/environment';
 import { UserService } from './user-service';
 
+// Akita Store
+import { ProductStore } from '../stores/product.store';
+import { ProductQuery } from '../stores/product.query';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProductDataService {
   readonly userService  = inject(UserService);
+  private readonly productStore = inject( ProductStore );
+  private readonly productQuery = inject( ProductQuery );
 
 	protected baseApiUrl : string = `${environment.apiUrl}`;
   
@@ -26,7 +33,32 @@ export class ProductDataService {
   constructor( private http: HttpClient ) { }
 
 
-  getProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30' ): Observable<IProductDetailModel[]> {
+
+  getProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30', forceRefresh: boolean = false ): Observable<IProductDetailModel[]> {
+    // Check if we have valid cached data
+    if ( !forceRefresh && this.productQuery.isCacheValid( rangeDays1, rangeDays2, futureDays ) ) {
+      return of( this.productQuery.products );
+    }
+
+    // Update loading state
+    this.productStore.update({ loading: true });
+
+    // Fetch from API
+    return this.fetchProductsFromApi( rangeDays1, rangeDays2, futureDays ).pipe(
+      tap({
+        next: ( products: IProductDetailModel[] ) => {
+          this.productStore.update({ products, loading: false, cacheParams: { shortRange: rangeDays1, longRange: rangeDays2, futureDays },
+          });
+        },
+        error: () => {
+          this.productStore.update({ loading: false });
+        },
+      })
+    );
+  }
+
+
+  private fetchProductsFromApi( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30' ): Observable<IProductDetailModel[]> {
     const storeUrl = this.userService.getStoreUrl();
     const params = new HttpParams()
       .set('store', storeUrl ?? '')
@@ -67,6 +99,16 @@ export class ProductDataService {
         });
       })
     );
+  }
+
+
+  refreshProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30' ): Observable<IProductDetailModel[]> {
+    return this.getProducts( rangeDays1, rangeDays2, futureDays, true );
+  }
+
+
+  clearCache(): void {
+    this.productStore.update({ products: [], cacheParams: null });
   }
 
 
