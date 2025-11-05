@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Toast, ToastService } from '../../../Services/toast.service';
 import { ToastTypeEnum } from '../../enums/enum';
 import { Subscription } from 'rxjs';
 
 @Component({
+  standalone: true,
   selector: 'app-toast',
+  imports: [CommonModule],
   templateUrl: './toast.component.html',
   styleUrls: ['./toast.component.scss']
 })

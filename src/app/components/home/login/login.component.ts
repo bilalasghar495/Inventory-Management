@@ -1,13 +1,17 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ImagePanelComponent } from '../../../shared/components/image-panel/image-panel.component';
 
 // Services
 import { UserService } from '../../../Services/user-service';
 import { ToastService } from '../../../Services/toast.service';
 
 @Component({
+  standalone: true,
   selector: 'app-login',
+  imports: [CommonModule, ReactiveFormsModule, ImagePanelComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })

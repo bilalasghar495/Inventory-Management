@@ -1,11 +1,15 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { UserService } from '../../../Services/user-service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../Services/toast.service';
+import { ImagePanelComponent } from '../../../shared/components/image-panel/image-panel.component';
 
 @Component({
+  standalone: true,
   selector: 'app-signup',
+  imports: [CommonModule, ReactiveFormsModule, ImagePanelComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })

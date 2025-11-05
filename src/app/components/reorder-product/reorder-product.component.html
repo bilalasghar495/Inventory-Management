@@ -126,7 +126,7 @@
                     <td class="Suggested-qty">{{ product.recommendedRestockLongRange | number:'1.0-2' }}</td>
                     <td class="Suggested-qty">{{ product.recommendedAverageStock | number:'1.0-2' }}</td>
                     <td>
-                      <span [class]="'urgency-' + product.urgencyLevel?.toLowerCase()"
+                      <span [class]="'urgency-' + product.urgencyLevel.toLowerCase()"
                       [matTooltip]="getUrgencyTooltip(product.urgencyLevel)"
                       matTooltipPosition="above"
                       class="cursor-pointer">

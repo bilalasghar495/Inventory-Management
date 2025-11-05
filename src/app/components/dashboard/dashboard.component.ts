@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 // Models
 import { IProductDetailModel } from '../../models/product.model';
@@ -8,7 +9,9 @@ import { ProductDataService } from '../../Services/product-data.service';
 import { ToastService } from '../../Services/toast.service';
 
 @Component({
+  standalone: true,
   selector: 'app-dashboard',
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

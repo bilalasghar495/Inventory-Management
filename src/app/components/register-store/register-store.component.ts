@@ -1,13 +1,17 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../Services/toast.service';
 import { UserService } from '../../Services/user-service';
+import { ImagePanelComponent } from '../../shared/components/image-panel/image-panel.component';
 
 @Component({
-  selector: 'app-register-store',
-  templateUrl: './register-store.component.html',
-  styleUrl: './register-store.component.scss'
+    standalone: true,
+    selector: 'app-register-store',
+    imports: [CommonModule, ReactiveFormsModule, ImagePanelComponent],
+    templateUrl: './register-store.component.html',
+    styleUrl: './register-store.component.scss'
 })
 export class RegisterStoreComponent implements OnInit, OnDestroy {
     readonly router       = inject( Router );
