@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://e84312bc3894.ngrok-free.app',
+  apiUrl: 'https://inventory-management-qieh.onrender.com',
   socketUrl: 'wss://inventory-management-qieh.onrender.com'
 };
