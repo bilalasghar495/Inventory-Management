@@ -1,6 +1,9 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonModule } from '@angular/common';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
+import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 
 // Services
 import { ProductDataService } from '../../Services/product-data.service';
@@ -19,7 +22,9 @@ import { Subject } from 'rxjs';
 import { UrgencyLevelEnum } from '../../shared/enums/enum';
 
 @Component({
+  standalone: true,
   selector: 'app-reorder-product',
+  imports: [CommonModule, MatTooltipModule, MatSnackBarModule, PaginationComponent],
   templateUrl: './reorder-product.component.html',
   styleUrl: './reorder-product.component.scss'
 })

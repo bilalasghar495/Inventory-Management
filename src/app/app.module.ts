@@ -37,21 +37,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ReorderProductComponent,
-    LoginComponent,
-    ForgotPasswordComponent,
-    PaginationComponent,
-    SignupComponent,
-    ImagePanelComponent,
-    SidebarComponent,
-    HeaderComponent,
-    DashboardComponent,
-    MainLayoutComponent,
-    ToastComponent,
-    RegisterStoreComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -65,7 +51,20 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     MatButtonModule,
     MatDividerModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    // Standalone components
+    ReorderProductComponent,
+    LoginComponent,
+    ForgotPasswordComponent,
+    PaginationComponent,
+    SignupComponent,
+    ImagePanelComponent,
+    SidebarComponent,
+    HeaderComponent,
+    DashboardComponent,
+    MainLayoutComponent,
+    ToastComponent,
+    RegisterStoreComponent,
   ],
   providers: [
     provideClientHydration(),

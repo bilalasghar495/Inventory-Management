@@ -1,10 +1,13 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { UserService } from '../../../Services/user-service';
 
 @Component({
+  standalone: true,
   selector: 'app-header',
+  imports: [CommonModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })

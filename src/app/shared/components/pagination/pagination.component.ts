@@ -1,4 +1,5 @@
 import { Component, computed, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 export interface PaginationConfig {
   currentPage: number;
@@ -7,7 +8,9 @@ export interface PaginationConfig {
 }
 
 @Component({
+  standalone: true,
   selector: 'app-pagination',
+  imports: [CommonModule],
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss']
 })
