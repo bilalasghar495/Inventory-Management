@@ -28,9 +28,14 @@ export class ProductQuery extends Query<ProductState> {
   }
 
 
-  isCacheValid( shortRange: number, longRange: number, futureDays: string ): boolean {
+  isCacheValid( shortRange: number, longRange: number, futureDays: string, storeUrl: string | null ): boolean {
     const cacheParams = this.cacheParams;
     if ( !cacheParams ) {
+      return false;
+    }
+
+    // Check if store URL matches - invalidate cache if store changed
+    if ( cacheParams.storeUrl !== storeUrl ) {
       return false;
     }
 

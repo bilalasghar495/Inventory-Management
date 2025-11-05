@@ -34,9 +34,11 @@ export class ProductDataService {
 
 
 
-  getProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30', forceRefresh: boolean = false ): Observable<IProductDetailModel[]> {
-    // Check if we have valid cached data
-    if ( !forceRefresh && this.productQuery.isCacheValid( rangeDays1, rangeDays2, futureDays ) ) {
+  getProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15', forceRefresh: boolean = false ): Observable<IProductDetailModel[]> {
+    const currentStoreUrl = this.userService.getStoreUrl();
+    
+    // Check if we have valid cached data and it's for the same store
+    if ( !forceRefresh && this.productQuery.isCacheValid( rangeDays1, rangeDays2, futureDays, currentStoreUrl ) ) {
       return of( this.productQuery.products );
     }
 
@@ -47,7 +49,7 @@ export class ProductDataService {
     return this.fetchProductsFromApi( rangeDays1, rangeDays2, futureDays ).pipe(
       tap({
         next: ( products: IProductDetailModel[] ) => {
-          this.productStore.update({ products, loading: false, cacheParams: { shortRange: rangeDays1, longRange: rangeDays2, futureDays },
+          this.productStore.update({ products, loading: false, cacheParams: { shortRange: rangeDays1, longRange: rangeDays2, futureDays, storeUrl: currentStoreUrl },
           });
         },
         error: () => {
@@ -102,7 +104,7 @@ export class ProductDataService {
   }
 
 
-  refreshProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '30' ): Observable<IProductDetailModel[]> {
+  refreshProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15' ): Observable<IProductDetailModel[]> {
     return this.getProducts( rangeDays1, rangeDays2, futureDays, true );
   }
 

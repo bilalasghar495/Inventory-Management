@@ -24,12 +24,13 @@ export class DashboardComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    // Load data - will use cache if valid for current store, otherwise fetch fresh
     this.loadProductData();
   }
 
-  loadProductData(): void {
-    this.productService.getProducts().subscribe({
-      next: (data: IProductDetailModel[]) => {
+  loadProductData( forceRefresh: boolean = false ): void {
+    this.productService.getProducts( 7, 30, '15', forceRefresh ).subscribe({
+      next: ( data: IProductDetailModel[] ) => {
         this.products = data;
         this.calculateAvailableStock();
       },

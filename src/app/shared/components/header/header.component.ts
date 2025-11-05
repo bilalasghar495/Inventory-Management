@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { UserService } from '../../../Services/user-service';
+import { ProductDataService } from '../../../Services/product-data.service';
 
 @Component({
   standalone: true,
@@ -13,8 +14,9 @@ import { UserService } from '../../../Services/user-service';
 })
 export class HeaderComponent implements OnInit {
 
-    private router      = inject( Router );
-    private userService = inject( UserService );
+    private router             = inject( Router );
+    private userService        = inject( UserService );
+    private productDataService = inject( ProductDataService );
 
     userName       : string  = '';
     userEmail      : string  = '';
@@ -79,6 +81,8 @@ export class HeaderComponent implements OnInit {
     }
 
     logout() {
+        // Clear product cache before logout to prevent showing previous user's data
+        this.productDataService.clearCache();
         this.userService.logout();
         this.isDropdownOpen = false;
         

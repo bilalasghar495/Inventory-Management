@@ -3,7 +3,7 @@ import { IProductDetailModel } from '../models/product.model';
 export interface ProductState {
   products: IProductDetailModel[];
   loading: boolean;
-  cacheParams: { shortRange: number; longRange: number; futureDays: string } | null;
+  cacheParams: { shortRange: number; longRange: number; futureDays: string; storeUrl: string | null } | null;
 }
 
 export function createInitialState(): ProductState {

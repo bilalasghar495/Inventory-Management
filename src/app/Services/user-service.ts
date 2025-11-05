@@ -96,6 +96,7 @@ export class UserService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('storeUrl');
+    localStorage.removeItem('userId');
   }
 
 

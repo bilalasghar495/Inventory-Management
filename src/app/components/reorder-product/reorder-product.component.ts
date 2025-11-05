@@ -52,7 +52,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
 
   readonly shortRange   = signal<number>(7);
   readonly longRange    = signal<number>(30);
-  readonly futureDays   = signal<string>('30');
+  readonly futureDays   = signal<string>('15');
   
   private readonly searchTermSubject = new Subject<string>();
   private readonly destroy$          = new Subject<void>();
@@ -114,7 +114,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
         this.onSearchChange( searchValue );
       });
 
-    // Fetch product detail (will use cache if available)
+    // Fetch product detail - will use cache if valid for current store, otherwise fetch fresh
     this.fetchProductDetail();
     this.fetchShopData();
   }

@@ -120,9 +120,9 @@
                     </td>
                     <td>{{ product.availableStock }}</td>
                     <td>{{ product.incomingStock }}</td>
-                    <td>{{ product.perDaySoldShortRange | number:'1.0-2' }}</td>
+                    <td>{{ product.shortRangeSales }} - {{ product.perDaySoldShortRange | number:'1.0-2' }}</td>
                     <td class="Suggested-qty">{{ product.recommendedRestockShortRange | number:'1.0-2' }}</td>
-                    <td>{{ product.perDaySoldLongRange | number:'1.0-2' }}</td>
+                    <td>{{ product.longRangeSales }} - {{ product.perDaySoldLongRange | number:'1.0-2' }}</td>
                     <td class="Suggested-qty">{{ product.recommendedRestockLongRange | number:'1.0-2' }}</td>
                     <td class="Suggested-qty">{{ product.recommendedAverageStock | number:'1.0-2' }}</td>
                     <td>
