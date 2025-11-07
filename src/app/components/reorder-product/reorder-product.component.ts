@@ -53,15 +53,22 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   readonly shortRange   = signal<number>(7);
   readonly longRange    = signal<number>(30);
   readonly futureDays   = signal<string>('15');
-  
+
+  readonly sortColumn    = signal<string | null>(null);
+  readonly sortDirection = signal<'asc' | 'desc'>('asc');
+
   private readonly searchTermSubject = new Subject<string>();
   private readonly destroy$          = new Subject<void>();
 
   // Filtered products based on search term and urgency level
   readonly filteredProducts = computed( () => {
-    const search = this.searchTerm().toLowerCase().trim();
-    const urgencyLevel = this.urgencyLevel();
-    
+    const search        = this.searchTerm().toLowerCase().trim();
+    const urgencyLevel  = this.urgencyLevel();
+
+    const sortColumn    = this.sortColumn();
+    const sortDirection = this.sortDirection();
+
+
     let filtered = this.products();
     
     // Filter by urgency level if selected
@@ -83,6 +90,27 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
       });
     }
     
+    // Sort by column if provided
+    if ( sortColumn && sortDirection ) {
+      filtered = [...filtered].sort( ( a, b ) => {
+        let aValue: any;
+        let bValue: any;
+        
+        if ( sortColumn === 'productName' ) {
+          aValue = a.productName?.toLowerCase() || '';
+          bValue = b.productName?.toLowerCase() || '';
+        }
+        
+        if ( aValue < bValue ) {
+          return sortDirection === 'asc' ? -1 : 1;
+        }
+        if ( aValue > bValue ) {
+          return sortDirection === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
     return filtered;
   });
   
@@ -112,7 +140,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     // Debounce the search term to prevent multiple requests
     this.searchTermSubject.pipe( debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$) ).subscribe(( searchValue: string ) => {
         this.onSearchChange( searchValue );
-      });
+    });
 
     // Fetch product detail (will use cache if available)
     this.fetchProductDetail();
@@ -123,6 +151,29 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+
+  onSort( column: string ): void {
+    const currentColumn    = this.sortColumn();
+    const currentDirection = this.sortDirection();
+    
+    if ( currentColumn === column ) {
+      // Toggle direction: asc -> desc -> null
+      if ( currentDirection === 'asc' ) {
+        this.sortDirection.set( 'desc' );
+      } else if ( currentDirection === 'desc' ) {
+        this.sortColumn.set( null );
+        this.sortDirection.set( 'asc' );
+      }
+    } else {
+      // New column, start with ascending
+      this.sortColumn.set( column );
+      this.sortDirection.set( 'asc' );
+    }
+    
+    // Reset to first page when sorting changes
+    this.currentPage.set( 1 );
   }
 
 
