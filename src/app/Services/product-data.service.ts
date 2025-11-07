@@ -80,23 +80,28 @@ export class ProductDataService {
             product.variantName && product.variantName !== 'Default Title' ? `${product.productName} - ${product.variantName}` : product.productName;
   
           return {
-            productId                   : product.productId,
-            productName                 : displayName,
-            productImage                : product.productImage,
-            variantId                   : product.variantId,
-            variantName                 : product.variantName,
-            availableStock              : product.availableStock,
-            totalInventory              : product.totalInventory,
-            incomingStock               : product.incomingStock,
-            shortRangeSales             : product.shortRangeSales,
-            longRangeSales              : product.longRangeSales,
-            perDaySoldShortRange        : product.perDaySoldShortRange,
-            perDaySoldLongRange         : product.perDaySoldLongRange,
-            recommendedAverageStock     : product.recommendedAverageStock,
-            recommendedRestockShortRange: product.recommendedRestockShortRange,
-            recommendedRestockLongRange : product.recommendedRestockLongRange,
-            urgencyLevel                : product.urgencyLevel,
-            sku                         : product.sku,
+            productId                          : product.productId,
+            productName                        : displayName,
+            productImage                       : product.productImage,
+            variantId                          : product.variantId,
+            variantName                        : product.variantName,
+            availableStock                     : product.availableStock,
+            totalInventory                     : product.totalInventory,
+            incomingStock                      : product.incomingStock,
+            sevenDaysRangeSales                : product.sevenDaysRangeSales,
+            fourteenDaysRangeSales             : product.fourteenDaysRangeSales,
+            thirtyDaysRangeSales               : product.thirtyDaysRangeSales,
+            
+            perDaySoldSevenDaysRange           : product.perDaySoldSevenDaysRange,
+            perDaySoldFourteenDaysRange        : product.perDaySoldFourteenDaysRange,
+            perDaySoldThirtyDaysRange          : product.perDaySoldThirtyDaysRange,
+            recommendedAverageStock            : product.recommendedAverageStock,
+
+            recommendedRestockSevenDaysRange   : product.recommendedRestockSevenDaysRange,
+            recommendedRestockFourteenDaysRange: product.recommendedRestockFourteenDaysRange,
+            recommendedRestockThirtyDaysRange  : product.recommendedRestockThirtyDaysRange,
+            urgencyLevel                       : product.urgencyLevel,
+            sku                                : product.sku,
           };
         });
       })

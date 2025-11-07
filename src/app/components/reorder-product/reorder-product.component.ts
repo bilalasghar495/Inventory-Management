@@ -177,16 +177,16 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   }
 
 
-  onShortRangeChange( value: string ): void {
-    this.shortRange.set(+value);
-    this.fetchProductDetail( true );
-  }
+  // onShortRangeChange( value: string ): void {
+  //   this.shortRange.set(+value);
+  //   this.fetchProductDetail( true );
+  // }
   
 
-  onLongRangeChange(value: string): void {
-    this.longRange.set(+value);
-    this.fetchProductDetail( true );
-  }
+  // onLongRangeChange(value: string): void {
+  //   this.longRange.set(+value);
+  //   this.fetchProductDetail( true );
+  // }
 
 
   // Fetch product detail
@@ -331,13 +331,13 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     
     switch ( urgencyLevel?.toUpperCase() ) {
       case 'LOW':
-        return 'Sufficient stock, no immediate restock needed.';
+        return 'Stock is low (< 5). Immediate restock required';
       case 'MEDIUM':
-        return 'Restock in the near future.';
+        return 'Stock is moderate (≥ 5 and < 10). Plan restock soon';
       case 'HIGH':
-        return 'Restock soon to avoid shortage.';
+        return 'Stock is decreasing (≥ 10 and < 20). Restock recommended';
       case 'CRITICAL':
-        return 'Your average recommended stock is below the critical leve.';
+        return 'Stock level is high (≥ 20). Monitor regularly';
       default:
         return 'No urgency level found.';
     }
