@@ -4,7 +4,7 @@ import { map, Observable, of, pipe } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 // Models
-import { IProductDetailModel, IProductApiResponse } from '../models/product.model';
+import { IProductDetailModel, IProductApiResponse, IExportProductData } from '../models/product.model';
 
 // Environment
 import { environment } from '../../environments/environment';
@@ -27,7 +27,7 @@ export class ProductDataService {
   // API URLS
   readonly API_URLS = {
     PRODUCTS       : `${this.baseApiUrl}/restock-prediction`,
-    CSV_EXPORT     : `${this.baseApiUrl}/export/csv`
+    CSV_EXPORT     : `${this.baseApiUrl}/export/csv/specific-products`
   };
 
   constructor( private http: HttpClient ) { }
@@ -121,17 +121,9 @@ export class ProductDataService {
   }
 
 
-  exportToCsv( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15' ): Observable<Blob> {
-    const storeUrl = this.userService.getStoreUrl();
-    const body = {
-      store     : storeUrl ?? '',
-      limit     : '250',
-      rangeDays1: rangeDays1.toString(),
-      rangeDays2: rangeDays2.toString(),
-      futureDays: futureDays
-    };
-    
-    return this.http.post(`${this.API_URLS.CSV_EXPORT}`, body, {
+  exportProductsData( products: IExportProductData[] ): Observable<Blob> {
+    // Send only the products array
+    return this.http.post(`${this.API_URLS.CSV_EXPORT}`, products, {
       responseType: 'blob'
     }).pipe(
       map(( res: Blob ) => {

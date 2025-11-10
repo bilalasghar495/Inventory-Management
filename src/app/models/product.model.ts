@@ -71,3 +71,28 @@ export interface IProductApiResponse {
 export interface IShopDataModel {
     shopDomain: string;
 }
+
+// Export payload interface for CSV export
+export interface IExportProductData {
+    productImage                       : string;
+    productId                          : string | number;
+    productName                        : string;
+    variantId                          : number;
+    variantName                        : string;
+    sku                                : string | null;
+    status                             : string;
+    sevenDaysRangeSales                : number;
+    fourteenDaysRangeSales             : number;
+    thirtyDaysRangeSales               : number;
+    perDaySoldSevenDaysRange           : number;
+    perDaySoldFourteenDaysRange        : number;
+    perDaySoldThirtyDaysRange          : number;
+    availableStock                     : number;
+    incomingStock                      : number;
+    totalInventory                     : number;
+    recommendedRestockSevenDaysRange   : number;
+    recommendedRestockFourteenDaysRange: number;
+    recommendedRestockThirtyDaysRange  : number;
+    recommendedAverageStock            : number;
+    urgencyLevel                       : string;
+}
