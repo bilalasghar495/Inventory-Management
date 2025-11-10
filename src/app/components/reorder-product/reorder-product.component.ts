@@ -15,7 +15,7 @@ import { WebsocketService } from '../../Services/websocket.service';
 import { ProductQuery } from '../../stores/product.query';
 
 // Models
-import { IProductDetailModel, IShopDataModel } from '../../models/product.model';
+import { IProductDetailModel, IShopDataModel, IExportProductData } from '../../models/product.model';
 
 // RxJS
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -42,6 +42,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   
   readonly products          = signal<IProductDetailModel[]>([]);
   readonly isSkeletonLoading = signal<boolean>(false);
+  readonly isExporting       = signal<boolean>(false);
   readonly urgencyLevel      = signal<UrgencyLevelEnum | null>(null);
   readonly searchTerm        = signal<string>('');
   
@@ -228,26 +229,47 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
 
 
   public exportToCsv(): void {
-    const shortRangeDays = this.shortRange();
-    const longRangeDays  = this.longRange();
-    const futureDays     = this.futureDays();
+    this.isExporting.set(true);
 
-    this.productDataService.exportToCsv( shortRangeDays, longRangeDays, futureDays ).subscribe({
+    // Check if there's a search term or filters applied
+    const hasSearchTerm = this.searchTerm().trim().length > 0;
+    const hasUrgencyFilter = this.urgencyLevel() !== null;
+    const currentStatus = this.status();
+    const hasStatusFilter = currentStatus !== ProductStatusEnum.Active;
+    
+    // If search, urgency filter, or status filter (non-default) is applied, export filtered products (limited view)
+    const hasAnyFilter = hasSearchTerm || hasUrgencyFilter || hasStatusFilter;
+    const productsToExport = hasAnyFilter ? this.filteredProducts() : this.products();
+
+    // Transform products to match backend format (only urgencyLevel needs lowercase conversion)
+    const exportData: IExportProductData[] = productsToExport.map(product => ({
+      ...product,
+      sku   : product.sku || null,
+      status: product.status as string,
+      urgencyLevel: product.urgencyLevel?.toLowerCase() || ''
+    } as IExportProductData));
+
+    this.productDataService.exportProductsData( exportData ).subscribe({
       next: ( blob: Blob ) => {
         // Create a download link and trigger it
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `inventory-export-${new Date().getTime()}.csv`;
+        const exportType = hasAnyFilter ? 'filtered' : 'full';
+        link.download = `inventory-export-${exportType}-${new Date().getTime()}.csv`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
         
-        this.showSnackbar( 'CSV Exported Successfully' );
+        this.isExporting.set(false);
+
+        const exportMessage = hasAnyFilter ? `CSV Exported Successfully (${exportData.length} filtered products)` : `CSV Exported Successfully (${exportData.length} products)`;
+        this.showSnackbar( exportMessage );
       },
       error: ( error: any ) => {
         console.log( error );
+        this.isExporting.set( false );
         this.showError( error.message || 'Failed to export CSV' );
       },
     });
