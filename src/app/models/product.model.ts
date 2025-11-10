@@ -1,4 +1,4 @@
-import { UrgencyLevelEnum } from "../shared/enums";
+import { ProductStatusEnum, UrgencyLevelEnum } from "../shared/enums";
 
 // Flattened Model for Display (used in component)
 export interface IProductDetailModel {
@@ -29,6 +29,7 @@ export interface IProductDetailModel {
     recommendedRestockThirtyDaysRange  : number;
 
     urgencyLevel                       : UrgencyLevelEnum;
+    status                             : ProductStatusEnum;
     sku                                : string;
 }
 
@@ -63,6 +64,7 @@ export interface IProductApiResponse {
     recommendedRestockThirtyDaysRange  : number;
 
     urgencyLevel                       : UrgencyLevelEnum;
+    status                             : ProductStatusEnum;
     sku                                : string;
 }
 

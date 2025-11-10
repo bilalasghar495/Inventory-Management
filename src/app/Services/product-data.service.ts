@@ -18,7 +18,7 @@ import { ProductQuery } from '../stores/product.query';
   providedIn: 'root'
 })
 export class ProductDataService {
-  readonly userService  = inject(UserService);
+  readonly userService          = inject( UserService );
   private readonly productStore = inject( ProductStore );
   private readonly productQuery = inject( ProductQuery );
 
@@ -26,19 +26,19 @@ export class ProductDataService {
   
   // API URLS
   readonly API_URLS = {
-    PRODUCTS  : `${this.baseApiUrl}/restock-prediction`,
-    CSV_EXPORT: `${this.baseApiUrl}/export/csv`
+    PRODUCTS       : `${this.baseApiUrl}/restock-prediction`,
+    CSV_EXPORT     : `${this.baseApiUrl}/export/csv`
   };
 
   constructor( private http: HttpClient ) { }
 
 
 
-  getProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15', forceRefresh: boolean = false ): Observable<IProductDetailModel[]> {
+  getProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15', status: string = 'ACTIVE', forceRefresh: boolean = false ): Observable<IProductDetailModel[]> {
     const currentStoreUrl = this.userService.getStoreUrl();
     
     // Check if we have valid cached data and it's for the same store
-    if ( !forceRefresh && this.productQuery.isCacheValid( rangeDays1, rangeDays2, futureDays, currentStoreUrl ) ) {
+    if ( !forceRefresh && this.productQuery.isCacheValid( rangeDays1, rangeDays2, futureDays, status, currentStoreUrl ) ) {
       return of( this.productQuery.products );
     }
 
@@ -46,10 +46,10 @@ export class ProductDataService {
     this.productStore.update({ loading: true });
 
     // Fetch from API
-    return this.fetchProductsFromApi( rangeDays1, rangeDays2, futureDays ).pipe(
+    return this.fetchProductsFromApi( rangeDays1, rangeDays2, futureDays, status ).pipe(
       tap({
         next: ( products: IProductDetailModel[] ) => {
-          this.productStore.update({ products, loading: false, cacheParams: { shortRange: rangeDays1, longRange: rangeDays2, futureDays, storeUrl: currentStoreUrl },
+          this.productStore.update({ products, loading: false, cacheParams: { shortRange: rangeDays1, longRange: rangeDays2, futureDays, status, storeUrl: currentStoreUrl },
           });
         },
         error: () => {
@@ -60,13 +60,14 @@ export class ProductDataService {
   }
 
 
-  private fetchProductsFromApi( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15' ): Observable<IProductDetailModel[]> {
+  private fetchProductsFromApi( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15', status: string = 'ACTIVE' ): Observable<IProductDetailModel[]> {
     const storeUrl = this.userService.getStoreUrl();
     const params = new HttpParams()
       .set('store', storeUrl ?? '')
       .set('rangeDays1', rangeDays1.toString())
       .set('rangeDays2', rangeDays2.toString())
       .set('futureDays', futureDays )
+      .set('status', status )
   
     return this.http.get<IProductApiResponse[]>(`${this.API_URLS.PRODUCTS}`, { 
       params: params 
@@ -102,6 +103,7 @@ export class ProductDataService {
             recommendedRestockThirtyDaysRange  : product.recommendedRestockThirtyDaysRange,
             urgencyLevel                       : product.urgencyLevel,
             sku                                : product.sku,
+            status                             : product.status,
           };
         });
       })
@@ -109,8 +111,8 @@ export class ProductDataService {
   }
 
 
-  refreshProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15' ): Observable<IProductDetailModel[]> {
-    return this.getProducts( rangeDays1, rangeDays2, futureDays, true );
+  refreshProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15', status: string = 'ACTIVE' ): Observable<IProductDetailModel[]> {
+    return this.getProducts( rangeDays1, rangeDays2, futureDays, status, true );
   }
 
 

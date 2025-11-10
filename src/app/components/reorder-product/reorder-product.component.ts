@@ -22,7 +22,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 // Enums
-import { UrgencyLevelEnum } from '../../shared/enums/enum';
+import { ProductStatusEnum, UrgencyLevelEnum } from '../../shared/enums/enum';
 
 @Component({
   standalone: true,
@@ -53,6 +53,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   readonly shortRange   = signal<number>(7);
   readonly longRange    = signal<number>(30);
   readonly futureDays   = signal<string>('15');
+  readonly status       = signal<ProductStatusEnum>(ProductStatusEnum.Active);
 
   readonly sortColumn    = signal<string | null>(null);
   readonly sortDirection = signal<'asc' | 'desc'>('asc');
@@ -126,6 +127,12 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
+    // Restore status filter from store if available
+    const cachedStatus = this.productQuery.currentStatus;
+    if ( cachedStatus ) {
+      this.status.set( cachedStatus as ProductStatusEnum );
+    }
+
     // Subscribe to Akita store products
     this.productQuery.products$.pipe(takeUntil(this.destroy$)).subscribe( ( products ) => {
         this.products.set( products );
@@ -194,16 +201,17 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     const shortRangeDays = this.shortRange();
     const longRangeDays  = this.longRange();
     const futureDays     = this.futureDays();
+    const status         = this.status();
 
-    this.productDataService.getProducts( shortRangeDays, longRangeDays, futureDays, forceRefresh ).pipe(takeUntil(this.destroy$) ).subscribe({
-        next: (data: IProductDetailModel[]) => {
-          console.log('Product data loaded', data);
-          // Data is automatically synced via store subscription
-        },
-        error: (error: any) => {
-          this.showError(error.message);
-        },
-      });
+    this.productDataService.getProducts( shortRangeDays, longRangeDays, futureDays, status, forceRefresh ).pipe(takeUntil(this.destroy$) ).subscribe({
+      next: ( data: IProductDetailModel[] ) => {
+        console.log('Product data loaded', data);
+        // Data is automatically synced via store subscription
+      },
+      error: ( error: any ) => {
+        this.showError( error.message );
+      },
+    });
   }
 
 
@@ -288,6 +296,13 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     }
     // Reset to first page when filter changes
     this.currentPage.set(1);
+  }
+
+
+  onStatusChange( value: ProductStatusEnum ): void {
+    this.status.set( value );
+    this.currentPage.set( 1 );
+    this.fetchProductDetail( true );
   }
 
 
