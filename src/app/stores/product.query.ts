@@ -10,6 +10,7 @@ export class ProductQuery extends Query<ProductState> {
   readonly products$: Observable<IProductDetailModel[]> = this.select((state) => state.products);
   readonly loading$ : Observable<boolean>               = this.select((state) => state.loading);
   readonly cacheParams$                                 = this.select((state) => state.cacheParams);
+  readonly currentStatus$                               = this.select((state) => state.cacheParams?.status || 'ACTIVE');
 
   constructor( protected override store: ProductStore ) {
     super(store);
@@ -27,8 +28,12 @@ export class ProductQuery extends Query<ProductState> {
     return this.getValue().cacheParams;
   }
 
+  get currentStatus(): string {
+    return this.getValue().cacheParams?.status ?? 'ACTIVE';
+  }
 
-  isCacheValid( shortRange: number, longRange: number, futureDays: string, storeUrl: string | null ): boolean {
+
+  isCacheValid( shortRange: number, longRange: number, futureDays: string, status: string, storeUrl: string | null ): boolean {
     const cacheParams = this.cacheParams;
     if ( !cacheParams ) {
       return false;
@@ -39,7 +44,7 @@ export class ProductQuery extends Query<ProductState> {
       return false;
     }
 
-    return ( cacheParams.shortRange === shortRange && cacheParams.longRange === longRange && cacheParams.futureDays === futureDays && this.products.length > 0 );
+    return ( cacheParams.shortRange === shortRange && cacheParams.longRange === longRange && cacheParams.futureDays === futureDays && cacheParams.status === status && this.products.length > 0 );
   }
 }
 

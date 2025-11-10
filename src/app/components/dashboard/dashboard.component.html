@@ -4,9 +4,11 @@
         <div class="stat-card">
             <div class="card-content">
                 <div class="card-header">
-                    <span class="card-title">TOTAL ITEMS</span>
+                    <span class="card-title">TOTAL ITEMS - ( {{ currentStatus() }} )</span>
                 </div>
-                <div class="card-value">{{ products.length }}</div>
+                <div class="card-value">
+                    {{ products().length }}
+                </div>
             </div>
             <div class="card-icon-wrapper green">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -22,7 +24,7 @@
                 <div class="card-header">
                     <span class="card-title">AVAILABLE STOCK</span>
                 </div>
-                <div class="card-value">{{ availableStock }}</div>
+                <div class="card-value">{{ availableStock() }}</div>
             </div>
             <div class="card-icon-wrapper blue">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

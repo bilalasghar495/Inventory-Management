@@ -12,3 +12,8 @@ export enum UrgencyLevelEnum {
   Critical = 'CRITICAL',
 }
 
+export enum ProductStatusEnum {
+  Active   = 'ACTIVE',
+  Draft    = 'DRAFT',
+}
+
