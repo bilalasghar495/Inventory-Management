@@ -114,13 +114,12 @@ export class RegisterStoreComponent implements OnInit, OnDestroy {
     }
 
 
-
-
     onSkip() {
         // Optional: Allow users to skip this step
         this.router.navigate(['/main']);
     }
 
+    
     onBack() {
         this.router.navigate(['/']);
     }

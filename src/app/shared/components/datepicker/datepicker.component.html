@@ -1,0 +1,12 @@
+<div class="datepicker-wrapper">
+  <input
+    type="text"
+    class="form-control"
+    [id]="datepickerId()"
+    [placeholder]="placeholder()"
+    bsDatepicker
+    [bsConfig]="datepickerConfig"
+    [(ngModel)]="internalDate"
+    (ngModelChange)="onDateChange($event)"
+  />
+</div>

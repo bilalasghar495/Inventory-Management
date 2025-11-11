@@ -4,6 +4,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
+import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
+
 
 // Services
 import { ProductDataService } from '../../Services/product-data.service';
@@ -27,7 +29,7 @@ import { ProductStatusEnum, UrgencyLevelEnum } from '../../shared/enums/enum';
 @Component({
   standalone: true,
   selector: 'app-reorder-product',
-  imports: [CommonModule, MatTooltipModule, MatSnackBarModule, PaginationComponent],
+  imports: [CommonModule, MatTooltipModule, MatSnackBarModule, PaginationComponent, DatepickerComponent],
   templateUrl: './reorder-product.component.html',
   styleUrl: './reorder-product.component.scss'
 })
@@ -58,6 +60,10 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
 
   readonly sortColumn    = signal<string | null>(null);
   readonly sortDirection = signal<'asc' | 'desc'>('asc');
+
+  // Date range signals
+  readonly startDate = signal<string | null>(null);
+  readonly endDate   = signal<string | null>(null);
 
   private readonly searchTermSubject = new Subject<string>();
   private readonly destroy$          = new Subject<void>();
@@ -95,12 +101,32 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     // Sort by column if provided
     if ( sortColumn && sortDirection ) {
       filtered = [...filtered].sort( ( a, b ) => {
-        let aValue: any;
-        let bValue: any;
+        let aValue: string | number;
+        let bValue: string | number;
         
-        if ( sortColumn === 'productName' ) {
-          aValue = a.productName?.toLowerCase() || '';
-          bValue = b.productName?.toLowerCase() || '';
+        switch ( sortColumn ) {
+          case 'productName':
+            aValue = a.productName?.toLowerCase() || '';
+            bValue = b.productName?.toLowerCase() || '';
+            break;
+          case 'availableStock':
+            aValue = a.availableStock ?? 0;
+            bValue = b.availableStock ?? 0;
+            break;
+          case 'incomingStock':
+            aValue = a.incomingStock ?? 0;
+            bValue = b.incomingStock ?? 0;
+            break;
+          case 'recommendedAverageStock':
+            aValue = a.recommendedAverageStock ?? 0;
+            bValue = b.recommendedAverageStock ?? 0;
+            break;
+          case 'urgencyLevel':
+            aValue = a.urgencyLevel?.toLowerCase() || '';
+            bValue = b.urgencyLevel?.toLowerCase() || '';
+            break;
+          default:
+            return 0;
         }
         
         if ( aValue < bValue ) {
@@ -159,6 +185,9 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    
+    // Complete search term subject
+    this.searchTermSubject.complete();
   }
 
 
@@ -249,28 +278,43 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
       urgencyLevel: product.urgencyLevel?.toLowerCase() || ''
     } as IExportProductData));
 
-    this.productDataService.exportProductsData( exportData ).subscribe({
-      next: ( blob: Blob ) => {
-        // Create a download link and trigger it
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        const exportType = hasAnyFilter ? 'filtered' : 'full';
-        link.download = `inventory-export-${exportType}-${new Date().getTime()}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        
-        this.isExporting.set(false);
+    if ( exportData.length === 0 ) {
+      this.isExporting.set(false);
+      this.showSnackbar('No products to export');
+      return;
+    }
 
-        const exportMessage = hasAnyFilter ? `CSV Exported Successfully (${exportData.length} filtered products)` : `CSV Exported Successfully (${exportData.length} products)`;
-        this.showSnackbar( exportMessage );
+    this.productDataService.exportProductsData( exportData ).pipe(takeUntil(this.destroy$)).subscribe({
+      next: ( blob: Blob ) => {
+        try {
+          // Create a download link and trigger it
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          const exportType = hasAnyFilter ? 'filtered' : 'full';
+          link.download = `inventory-export-${exportType}-${new Date().getTime()}.csv`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+          
+          this.isExporting.set(false);
+
+          const exportMessage = hasAnyFilter 
+            ? `CSV Exported Successfully (${exportData.length} filtered products)` 
+            : `CSV Exported Successfully (${exportData.length} products)`;
+          this.showSnackbar( exportMessage );
+        } catch (error) {
+          this.isExporting.set(false);
+          const errorMessage = error instanceof Error ? error.message : 'Failed to download CSV file';
+          this.showError(errorMessage);
+        }
       },
       error: ( error: any ) => {
         console.log( error );
         this.isExporting.set( false );
-        this.showError( error.message || 'Failed to export CSV' );
+        const errorMessage = error instanceof Error ? error.message : 'Failed to export CSV';
+        this.showError( errorMessage );
       },
     });
   }
@@ -278,7 +322,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
 
   private fetchShopData(): void {
     const shop = this.userService.getStoreUrl();
-    this.userService.getShopData( shop ?? '' ).subscribe({
+    this.userService.getShopData( shop ?? '' ).pipe(takeUntil(this.destroy$)).subscribe({
       next: ( data: IShopDataModel ) => {
         
         // Connect WebSocket with the shopDomain from the API response
@@ -286,25 +330,26 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
           this.websocketService.connect( data.shopDomain );
           
           // Set up WebSocket event listeners after connection
-          this.websocketService.listen('orderCreated').subscribe(( productData ) => {
-            const productName = productData?.title || productData?.name || 'Unknown Product';
-            this.showSnackbar(`${productName} Order Created Successfully`);
-            // this.fetchProductDetail();
-          });
+          // this.websocketService.listen('orderCreated').subscribe(( productData ) => {
+          //   const productName = productData?.title || productData?.name || 'Unknown Product';
+          //   this.showSnackbar(`${productName} Order Created Successfully`);
+          //   this.fetchProductDetail();
+          // });
 
-          this.websocketService.listen('productUpdated').subscribe(( productData ) => {
-            const productName = productData?.title || productData?.name || 'Unknown Product';
-            this.showSnackbar(`${productName} Product Updated Successfully`);
-            // this.fetchProductDetail();
-          });
+          // this.websocketService.listen('productUpdated').subscribe(( productData ) => {
+          //   const productName = productData?.title || productData?.name || 'Unknown Product';
+          //   this.showSnackbar(`${productName} Product Updated Successfully`);
+          //   this.fetchProductDetail();
+          // });
 
           this.websocketService.listen('appUninstalled').subscribe(() => {
             this.router.navigate(['/register-store'], { queryParams: { uninstalled: 'true' } });
           });
         }
       },
-      error: (error: any) => {
-        this.showError( error.message );
+      error: (error: unknown) => {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch shop data';
+        this.showError( errorMessage );
       },
     });
   }

@@ -15,6 +15,7 @@ import { ToastService } from '../../../Services/toast.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
+
 export class LoginComponent {
   readonly UserService  = inject(UserService);
   readonly router       = inject(Router);

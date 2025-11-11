@@ -13,32 +13,15 @@
         (input)="onSearchInput($event)"
       />
     </div>
-    
+
+
+    <div id="date-range-picker">
+      <app-datepicker datepickerId="start-date" placeholder="Start date" [value]="startDate()" (valueChange)="startDate.set($event)"></app-datepicker>
+      <span>to</span>
+      <app-datepicker datepickerId="end-date" placeholder="End date" [value]="endDate()" (valueChange)="endDate.set($event)"></app-datepicker>
+    </div>
+
     <div class="actions-container">
-
-      <!-- <select
-        id="shortRange"
-        (change)="onShortRangeChange($any($event.target).value)" 
-        class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-200 hover:text-black transition-colors"
-        >              
-          <option value="" disabled>Select a period</option>
-          <option value="7" selected> per day sold 7 days</option>
-          <option value="1"> per day sold 1 days</option>
-          <option value="14"> per day sold 14 days</option>
-          <option value="30"> per day sold 30 days</option>
-      </select>
-
-      <select 
-        id="longRange"
-        (change)="onLongRangeChange($any($event.target).value)"
-        class="flex items-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-200 hover:text-black transition-colors"
-        >
-          <option value="" disabled>Select a period</option>
-          <option value="7"> per day sold 7 days</option>
-          <option value="14"> per day sold 14 days</option>
-          <option value="30" selected> per day sold 30 days</option>
-      </select> -->
-
       <select 
           id="status"
           [value]="status()"
