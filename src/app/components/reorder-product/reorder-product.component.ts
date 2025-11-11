@@ -98,9 +98,29 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
         let aValue: any;
         let bValue: any;
         
-        if ( sortColumn === 'productName' ) {
-          aValue = a.productName?.toLowerCase() || '';
-          bValue = b.productName?.toLowerCase() || '';
+        switch ( sortColumn ) {
+          case 'productName':
+            aValue = a.productName?.toLowerCase() || '';
+            bValue = b.productName?.toLowerCase() || '';
+            break;
+          case 'availableStock':
+            aValue = a.availableStock ?? 0;
+            bValue = b.availableStock ?? 0;
+            break;
+          case 'incomingStock':
+            aValue = a.incomingStock ?? 0;
+            bValue = b.incomingStock ?? 0;
+            break;
+          case 'recommendedAverageStock':
+            aValue = a.recommendedAverageStock ?? 0;
+            bValue = b.recommendedAverageStock ?? 0;
+            break;
+          case 'urgencyLevel':
+            aValue = a.urgencyLevel?.toLowerCase() || '';
+            bValue = b.urgencyLevel?.toLowerCase() || '';
+            break;
+          default:
+            return 0;
         }
         
         if ( aValue < bValue ) {
@@ -183,18 +203,6 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     // Reset to first page when sorting changes
     this.currentPage.set( 1 );
   }
-
-
-  // onShortRangeChange( value: string ): void {
-  //   this.shortRange.set(+value);
-  //   this.fetchProductDetail( true );
-  // }
-  
-
-  // onLongRangeChange(value: string): void {
-  //   this.longRange.set(+value);
-  //   this.fetchProductDetail( true );
-  // }
 
 
   // Fetch product detail

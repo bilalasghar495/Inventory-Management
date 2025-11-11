@@ -84,19 +84,19 @@ export class RegisterStoreComponent implements OnInit, OnDestroy {
                 
                 // Check if the app is installed but user is not authorized
                 if ( response.isInstalled === true && response.isAuthorized === false ) {
-                this.toastService.error( response.message );
-                return;
+                    this.toastService.error( response.message );
+                    return;
                 }
                 
                 // Check if the app is installed and user is authorized
                 if ( response.isInstalled === true && response.isAuthorized === true ) {
-                this.toastService.success( 'Congratulations! Your app is successfully registered with us.' );
-                this.router.navigate(['/main']);
+                    this.toastService.success( 'Congratulations! Your app is successfully registered with us.' );
+                    this.router.navigate(['/main']);
                 } else {
-                // App is not installed - show install button with URL
-                this.showReinstallAppAlert = true;
-                this.installUrl = `${response.installationUrl}/shopify-oauth/init?shop=${formData.storeUrl}&userId=${response.userId}`;
-                this.autoHideAlert();
+                    // App is not installed - show install button with URL
+                    this.showReinstallAppAlert = true;
+                    this.installUrl = `${response.installationUrl}/shopify-oauth/init?shop=${formData.storeUrl}&userId=${response.userId}`;
+                    this.autoHideAlert();
                 }
             },
             error: ( error ) => {
@@ -107,6 +107,7 @@ export class RegisterStoreComponent implements OnInit, OnDestroy {
         }
     }
 
+
     onInstallClick() {
         if ( this.installUrl ) {
             window.open( this.installUrl, '_blank' );
@@ -114,13 +115,12 @@ export class RegisterStoreComponent implements OnInit, OnDestroy {
     }
 
 
-
-
     onSkip() {
         // Optional: Allow users to skip this step
         this.router.navigate(['/main']);
     }
 
+    
     onBack() {
         this.router.navigate(['/']);
     }
