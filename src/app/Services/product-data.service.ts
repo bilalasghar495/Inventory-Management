@@ -26,8 +26,9 @@ export class ProductDataService {
   
   // API URLS
   readonly API_URLS = {
-    PRODUCTS       : `${this.baseApiUrl}/restock-prediction`,
-    CSV_EXPORT     : `${this.baseApiUrl}/export/csv/specific-products`
+    PRODUCTS        : `${this.baseApiUrl}/restock-prediction`,
+    PRODUCTS_BY_DATE: `${this.baseApiUrl}/restock-prediction/range`,
+    CSV_EXPORT      : `${this.baseApiUrl}/export/csv/specific-products`
   };
 
   constructor( private http: HttpClient ) { }
@@ -76,7 +77,7 @@ export class ProductDataService {
         console.log( 'product data', res );
         if (!Array.isArray(res)) return [];
   
-        return res.map((product) => {
+        return res.map(( product ) => {
           const displayName =
             product.variantName && product.variantName !== 'Default Title' ? `${product.productName} - ${product.variantName}` : product.productName;
   
@@ -101,6 +102,11 @@ export class ProductDataService {
             recommendedRestockSevenDaysRange   : product.recommendedRestockSevenDaysRange,
             recommendedRestockFourteenDaysRange: product.recommendedRestockFourteenDaysRange,
             recommendedRestockThirtyDaysRange  : product.recommendedRestockThirtyDaysRange,
+
+            totalSales                         : product.totalSales,
+            soldPerDay                         : product.soldPerDay,
+            recommendedRestock                 : product.recommendedRestock,
+            
             urgencyLevel                       : product.urgencyLevel,
             sku                                : product.sku,
             status                             : product.status,
@@ -128,6 +134,45 @@ export class ProductDataService {
     }).pipe(
       map(( res: Blob ) => {
         return res;
+      })
+    );
+  }
+
+
+  getProductsByDateRange( storeUrl: string, startDate: string, endDate: string, futureDays: string = '15', status: string = 'active' ): Observable<IProductDetailModel[]> {
+    const params = new HttpParams()
+      .set('store', storeUrl)
+      .set('startDate', startDate)
+      .set('endDate', endDate)
+      .set('futureDays', futureDays)
+      .set('status', status);
+
+    return this.http.get<IProductApiResponse[]>(`${this.API_URLS.PRODUCTS_BY_DATE}`, {
+      params: params
+    }).pipe(
+      map((res: IProductApiResponse[]) => {
+        console.log('product data by date range', res);
+        if (!Array.isArray(res)) return [];
+
+        const rangeData = res.map((product) => {
+          const displayName =
+            product.variantName && product.variantName !== 'Default Title' ? `${product.productName} - ${product.variantName}` : product.productName;
+
+          return {
+            productId                          : product.productId,
+            productName                        : displayName,
+            variantId                          : product.variantId,
+            variantName                        : product.variantName,
+            totalSales                         : product.totalSales,
+            soldPerDay                         : product.soldPerDay,
+            recommendedRestock                 : product.recommendedRestock,
+            sku                                : product.sku, 
+          } as IProductDetailModel;
+        });
+
+        this.productQuery.updateProductRangeData( rangeData );
+        console.log('product data by date range', this.productQuery.products);
+        return this.productQuery.products;
       })
     );
   }

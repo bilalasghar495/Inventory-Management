@@ -1,17 +1,25 @@
 @use '../../../styles/variable' as *;
+
 .datepicker-wrapper {
   position: relative;
   z-index: 1;
+  margin-top: -25px;
+  
+  .input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
   
   .form-control {
     min-width: 150px;
     width: 100%;
-    padding: 10px 14px;
+    padding: 6px 9px 6px 9px;
     font-size: 14px;
     color: #374151;
     border: 1px solid $color-new-light-gray;
     border-radius: 8px;
-    background: #f9fafb;
+    background: $color-white;
     transition: all 0.2s ease;
     
     &::placeholder {
@@ -30,11 +38,33 @@
       background: #fff;
     }
   }
+  
+  .calendar-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.2s ease;
+    pointer-events: auto;
+    
+    &:hover {
+      color: #374151;
+    }
+    
+    svg {
+      display: block;
+    }
+  }
 }
 
 // Datepicker
 ::ng-deep bs-datepicker-container {
-  z-index: 1050 !important; // Same as modal
+  z-index: 1050 !important;
 
   .bs-datepicker {
     background: $color-gray !important;
@@ -71,9 +101,15 @@
         td {
           span {
             color: #374151;
-            border-radius: 15px;
+            border-radius: 50%;
             transition: all 0.2s ease;
-            padding: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            min-width: 32px;
             
             // &:hover:not(.disabled):not(.is-other-month) {
             //   background: #f3f4f6;
@@ -83,7 +119,14 @@
             &.active {
               background: #3b82f6;
               color: #fff;
-              padding: 6px;
+              border-radius: 50%;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 32px;
+              height: 32px;
+              padding: 0;
+              min-width: 32px;
               
               &:hover {
                 background: #2563eb;

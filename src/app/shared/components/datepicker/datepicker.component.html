@@ -1,12 +1,22 @@
 <div class="datepicker-wrapper">
-  <input
-    type="text"
-    class="form-control"
-    [id]="datepickerId()"
-    [placeholder]="placeholder()"
-    bsDatepicker
-    [bsConfig]="datepickerConfig"
-    [(ngModel)]="internalDate"
-    (ngModelChange)="onDateChange($event)"
-  />
+  <label class="text-sm text-gray-500" [for]="datepickerId()">{{ placeholder() }}</label>
+  <div class="input-icon-wrapper">
+    <input
+      [attr.aria-label]="label()"
+      type="text"
+      class="form-control"
+      [id]="datepickerId()"
+      [placeholder]="placeholder()"
+      bsDatepicker
+      [bsConfig]="datepickerConfig"
+      [(ngModel)]="internalDate"
+      (ngModelChange)="onDateChange($event)"
+      #datepickerInput
+    />
+    <span class="calendar-icon" (click)="openDatepicker(datepickerInput)">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 2V4M14 2V4M3 6H17M4 4H16C16.5304 4 17.0391 4.21071 17.4142 4.58579C17.7893 4.96086 18 5.46957 18 6V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V6C2 5.46957 2.21071 4.96086 2.58579 4.58579C2.96086 4.21071 3.46957 4 4 4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </div>
 </div>

@@ -18,6 +18,7 @@ defineLocale('en-gb', enGbLocale);
 export class DatepickerComponent {
   // Input properties for UI configuration
   readonly datepickerId = input<string>('datepicker-default');
+  readonly label        = input<string>('Select date');
   readonly placeholder  = input<string>('Select date');
   readonly value        = input<string | null>(null);
   readonly valueChange  = output<string | null>();
@@ -44,8 +45,13 @@ export class DatepickerComponent {
         } else {
           this.internalDate = null;
         }
-      } else {
-        this.internalDate = null;
+      } else if (val === null || val === undefined || val === '') {
+        // If no value is provided, set to current date by default
+        if (this.internalDate === null) {
+          this.internalDate = new Date();
+          // Emit the current date
+          this.onDateChange(this.internalDate);
+        }
       }
     });
   }
@@ -58,6 +64,11 @@ export class DatepickerComponent {
     } else {
       this.valueChange.emit( null );
     }
+  }
+
+  openDatepicker( inputElement: HTMLInputElement ): void {
+    // Trigger click on input to open datepicker
+    inputElement.click();
   }
 }
 
