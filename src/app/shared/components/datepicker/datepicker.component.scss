@@ -1,0 +1,171 @@
+@use '../../../styles/variable' as *;
+
+.datepicker-wrapper {
+  position: relative;
+  z-index: 1;
+  margin-top: -25px;
+  
+  .input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .form-control {
+    min-width: 150px;
+    width: 100%;
+    padding: 6px 9px 6px 9px;
+    font-size: 14px;
+    color: #374151;
+    border: 1px solid $color-new-light-gray;
+    border-radius: 8px;
+    background: $color-white;
+    transition: all 0.2s ease;
+    
+    &::placeholder {
+      color: $color-faded-gray;
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: $color-gray;
+      background: $color-white;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    &:hover {
+      border-color: #d1d5db;
+      background: #fff;
+    }
+  }
+  
+  .calendar-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.2s ease;
+    pointer-events: auto;
+    
+    &:hover {
+      color: #374151;
+    }
+    
+    svg {
+      display: block;
+    }
+  }
+}
+
+// Datepicker
+::ng-deep bs-datepicker-container {
+  z-index: 1050 !important;
+
+  .bs-datepicker {
+    background: $color-gray !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+
+    .bs-datepicker-head {
+      background: $color-dark-gray !important;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 12px;
+      text-align: center;
+      
+      button {
+        color: $color-white;
+        font-weight: 400;
+    
+      }
+    }
+    
+    .bs-datepicker-body {
+      padding: 8px;
+      background: #ffffff !important;
+      cursor: pointer;
+      
+      table {
+        th {
+          color: #6b7280;
+          font-weight: 600;
+          font-size: 12px;
+          padding: 8px 4px;
+        }
+        
+        td {
+          span {
+            color: #374151;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            min-width: 32px;
+            
+            // &:hover:not(.disabled):not(.is-other-month) {
+            //   background: #f3f4f6;
+            // }
+            
+            &.selected,
+            &.active {
+              background: #3b82f6;
+              color: #fff;
+              border-radius: 50%;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 32px;
+              height: 32px;
+              padding: 0;
+              min-width: 32px;
+              
+              &:hover {
+                background: #2563eb;
+              }
+            }
+            
+            &.is-other-month {
+              color: #d1d5db;
+            }
+            
+            &.disabled {
+              color: #d1d5db;
+              cursor: not-allowed;
+            }
+          }
+        }
+      }
+    }
+    
+    // .bs-datepicker-footer {
+    //   border-top: 1px solid #e5e7eb;
+    //   padding: 8px 12px;
+    //   background: #f9fafb !important;
+      
+    //   button {
+    //     color: #3b82f6;
+    //     font-weight: 500;
+        
+    //     &:hover {
+    //       color: #2563eb;
+    //     }
+    //   }
+    // }
+  }
+
+  .bs-datepicker-head button[disabled],
+  .bs-datepicker-head button[disabled]:hover,
+  .bs-datepicker-head button[disabled]:active {
+    background-color: transparent;
+    opacity: 0.5;
+  }
+}

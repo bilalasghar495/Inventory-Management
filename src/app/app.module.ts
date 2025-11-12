@@ -32,6 +32,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+// ngx-bootstrap Modules
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+// import { ModalModule } from 'ngx-bootstrap/modal';
+// import { TooltipModule } from 'ngx-bootstrap/tooltip';
+// import { PopoverModule } from 'ngx-bootstrap/popover';
+// import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+
 
 // Interceptors
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -52,6 +63,11 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     MatDividerModule,
     MatSnackBarModule,
     MatTooltipModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    // ngx-bootstrap modules
+    BsDatepickerModule.forRoot(),
     // Standalone components
     ReorderProductComponent,
     LoginComponent,

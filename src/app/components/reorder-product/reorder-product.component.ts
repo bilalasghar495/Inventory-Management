@@ -1,9 +1,11 @@
-import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
+import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
+
 
 // Services
 import { ProductDataService } from '../../Services/product-data.service';
@@ -27,7 +29,7 @@ import { ProductStatusEnum, UrgencyLevelEnum } from '../../shared/enums/enum';
 @Component({
   standalone: true,
   selector: 'app-reorder-product',
-  imports: [CommonModule, MatTooltipModule, MatSnackBarModule, PaginationComponent],
+  imports: [CommonModule, MatTooltipModule, MatSnackBarModule, PaginationComponent, DatepickerComponent],
   templateUrl: './reorder-product.component.html',
   styleUrl: './reorder-product.component.scss'
 })
@@ -43,6 +45,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   readonly products          = signal<IProductDetailModel[]>([]);
   readonly isSkeletonLoading = signal<boolean>(false);
   readonly isExporting       = signal<boolean>(false);
+  readonly isDateRangeLoading = signal<boolean>(false);
   readonly urgencyLevel      = signal<UrgencyLevelEnum | null>(null);
   readonly searchTerm        = signal<string>('');
   
@@ -59,7 +62,12 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   readonly sortColumn    = signal<string | null>(null);
   readonly sortDirection = signal<'asc' | 'desc'>('asc');
 
+  // Date range signals
+  readonly startDate = signal<string | null>(null);
+  readonly endDate   = signal<string | null>(null);
+
   private readonly searchTermSubject = new Subject<string>();
+  private readonly dateRangeSubject  = new Subject<{ startDate: string; endDate: string }>();
   private readonly destroy$          = new Subject<void>();
 
   // Filtered products based on search term and urgency level
@@ -95,8 +103,8 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     // Sort by column if provided
     if ( sortColumn && sortDirection ) {
       filtered = [...filtered].sort( ( a, b ) => {
-        let aValue: any;
-        let bValue: any;
+        let aValue: string | number;
+        let bValue: string | number;
         
         switch ( sortColumn ) {
           case 'productName':
@@ -145,7 +153,30 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   readonly totalFilteredItems = computed(() => this.filteredProducts().length);
   
 
-  constructor() {}
+  constructor() {
+    // Effect to trigger date range API when both dates are set
+    effect(() => {
+      const startDate = this.startDate();
+      const endDate = this.endDate();
+      
+      // Only trigger if both dates are set
+      if (startDate && endDate) {
+        this.dateRangeSubject.next({ startDate, endDate });
+      }
+    });
+
+    // Debounce date range changes to prevent rapid API calls
+    this.dateRangeSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged((prev, curr) => prev.startDate === curr.startDate && prev.endDate === curr.endDate),
+      takeUntil(this.destroy$)
+    ).subscribe(({ startDate, endDate }) => {
+      // Verify dates are still set (they might have been cleared)
+      if (this.startDate() === startDate && this.endDate() === endDate && startDate && endDate) {
+        this.fetchProductsByDateRange();
+      }
+    });
+  }
 
   ngOnInit(): void {
     // Restore status filter from store if available
@@ -179,6 +210,10 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    
+    // Complete subjects
+    this.searchTermSubject.complete();
+    this.dateRangeSubject.complete();
   }
 
 
@@ -257,28 +292,43 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
       urgencyLevel: product.urgencyLevel?.toLowerCase() || ''
     } as IExportProductData));
 
-    this.productDataService.exportProductsData( exportData ).subscribe({
-      next: ( blob: Blob ) => {
-        // Create a download link and trigger it
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        const exportType = hasAnyFilter ? 'filtered' : 'full';
-        link.download = `inventory-export-${exportType}-${new Date().getTime()}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        
-        this.isExporting.set(false);
+    if ( exportData.length === 0 ) {
+      this.isExporting.set(false);
+      this.showSnackbar('No products to export');
+      return;
+    }
 
-        const exportMessage = hasAnyFilter ? `CSV Exported Successfully (${exportData.length} filtered products)` : `CSV Exported Successfully (${exportData.length} products)`;
-        this.showSnackbar( exportMessage );
+    this.productDataService.exportProductsData( exportData ).pipe(takeUntil(this.destroy$)).subscribe({
+      next: ( blob: Blob ) => {
+        try {
+          // Create a download link and trigger it
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          const exportType = hasAnyFilter ? 'filtered' : 'full';
+          link.download = `inventory-export-${exportType}-${new Date().getTime()}.csv`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+          
+          this.isExporting.set(false);
+
+          const exportMessage = hasAnyFilter 
+            ? `CSV Exported Successfully (${exportData.length} filtered products)` 
+            : `CSV Exported Successfully (${exportData.length} products)`;
+          this.showSnackbar( exportMessage );
+        } catch (error) {
+          this.isExporting.set(false);
+          const errorMessage = error instanceof Error ? error.message : 'Failed to download CSV file';
+          this.showError(errorMessage);
+        }
       },
       error: ( error: any ) => {
         console.log( error );
         this.isExporting.set( false );
-        this.showError( error.message || 'Failed to export CSV' );
+        const errorMessage = error instanceof Error ? error.message : 'Failed to export CSV';
+        this.showError( errorMessage );
       },
     });
   }
@@ -286,7 +336,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
 
   private fetchShopData(): void {
     const shop = this.userService.getStoreUrl();
-    this.userService.getShopData( shop ?? '' ).subscribe({
+    this.userService.getShopData( shop ?? '' ).pipe(takeUntil(this.destroy$)).subscribe({
       next: ( data: IShopDataModel ) => {
         
         // Connect WebSocket with the shopDomain from the API response
@@ -294,25 +344,26 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
           this.websocketService.connect( data.shopDomain );
           
           // Set up WebSocket event listeners after connection
-          this.websocketService.listen('orderCreated').subscribe(( productData ) => {
-            const productName = productData?.title || productData?.name || 'Unknown Product';
-            this.showSnackbar(`${productName} Order Created Successfully`);
-            // this.fetchProductDetail();
-          });
+          // this.websocketService.listen('orderCreated').subscribe(( productData ) => {
+          //   const productName = productData?.title || productData?.name || 'Unknown Product';
+          //   this.showSnackbar(`${productName} Order Created Successfully`);
+          //   this.fetchProductDetail();
+          // });
 
-          this.websocketService.listen('productUpdated').subscribe(( productData ) => {
-            const productName = productData?.title || productData?.name || 'Unknown Product';
-            this.showSnackbar(`${productName} Product Updated Successfully`);
-            // this.fetchProductDetail();
-          });
+          // this.websocketService.listen('productUpdated').subscribe(( productData ) => {
+          //   const productName = productData?.title || productData?.name || 'Unknown Product';
+          //   this.showSnackbar(`${productName} Product Updated Successfully`);
+          //   this.fetchProductDetail();
+          // });
 
           this.websocketService.listen('appUninstalled').subscribe(() => {
             this.router.navigate(['/register-store'], { queryParams: { uninstalled: 'true' } });
           });
         }
       },
-      error: (error: any) => {
-        this.showError( error.message );
+      error: (error: unknown) => {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch shop data';
+        this.showError( errorMessage );
       },
     });
   }
@@ -386,5 +437,59 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
       default:
         return 'No urgency level found.';
     }
+  }
+
+  // Fetch products by date range when dates are selected
+  private fetchProductsByDateRange(): void {
+    const storeUrl = this.userService.getStoreUrl();
+    if (!storeUrl) {
+      console.warn('Store URL not available, skipping date range API call');
+      return;
+    }
+
+    const startDateStr = this.startDate();
+    const endDateStr = this.endDate();
+
+    if ( !startDateStr || !endDateStr ) {
+      return;
+    }
+
+    // Validate date order (startDate should be before endDate)
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+    
+    if ( startDate > endDate ) {
+      console.warn('Start date is after end date, swapping dates');
+      // Swap dates if they're in wrong order
+      const temp = startDateStr;
+      this.startDate.set(endDateStr);
+      this.endDate.set(temp);
+      return; // Effect will trigger again with swapped dates
+    }
+
+    // Format dates as ISO datetime strings with milliseconds (e.g., 2025-11-05T10:53:16.510Z)
+    // Start date: beginning of day in UTC (00:00:00.000Z)
+    const startDateObj = new Date(startDateStr + 'T00:00:00.000Z');
+    const formattedStartDate = startDateObj.toISOString();
+    
+    // End date: always use end of day (23:59:59)
+    const formattedEndDate = endDateStr + 'T23:59:59';
+
+    console.log('Triggering date range API with:', { storeUrl, startDateStr: formattedStartDate, endDateStr: formattedEndDate });
+
+    // Set loading state to true
+    this.isDateRangeLoading.set(true);
+
+    this.productDataService.getProductsByDateRange( storeUrl, formattedStartDate, formattedEndDate, this.futureDays(), this.status().toLowerCase() ).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => {
+        console.log('Date range API response:', data);
+        this.isDateRangeLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Date range API error:', error);
+        this.isDateRangeLoading.set(false);
+        this.showError('Failed to fetch products for selected date range');
+      }
+    });
   }
 }

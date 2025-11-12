@@ -46,5 +46,20 @@ export class ProductQuery extends Query<ProductState> {
 
     return ( cacheParams.shortRange === shortRange && cacheParams.longRange === longRange && cacheParams.futureDays === futureDays && cacheParams.status === status && this.products.length > 0 );
   }
+
+
+  updateProductRangeData( rangeData: IProductDetailModel[] ) {
+    const products = [...this.products];
+
+    products.forEach(product => {
+      const matchingRangeData = rangeData.find( r => r.productId === product.productId && r.variantId === product.variantId );
+      if ( matchingRangeData ) {
+        product.totalSales = matchingRangeData.totalSales;
+        product.soldPerDay = matchingRangeData.soldPerDay;
+        product.recommendedRestock = matchingRangeData.recommendedRestock;
+      }
+    });
+    this.store.update({ products: products });
+  }
 }
 

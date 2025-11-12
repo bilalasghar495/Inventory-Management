@@ -28,6 +28,11 @@ export interface IProductDetailModel {
     recommendedRestockFourteenDaysRange: number;
     recommendedRestockThirtyDaysRange  : number;
 
+    // Date range specific fields
+    totalSales                         : number;
+    soldPerDay                         : number;
+    recommendedRestock                 : number;
+
     urgencyLevel                       : UrgencyLevelEnum;
     status                             : ProductStatusEnum;
     sku                                : string;
@@ -62,6 +67,11 @@ export interface IProductApiResponse {
     recommendedRestockSevenDaysRange   : number;
     recommendedRestockFourteenDaysRange: number;
     recommendedRestockThirtyDaysRange  : number;
+
+    // Date range specific fields
+    totalSales                         : number;
+    soldPerDay                         : number;
+    recommendedRestock                 : number;
 
     urgencyLevel                       : UrgencyLevelEnum;
     status                             : ProductStatusEnum;
