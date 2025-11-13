@@ -3,8 +3,14 @@
 .datepicker-wrapper {
   position: relative;
   z-index: 1;
-  margin-top: -25px;
-  
+  margin-top: -23px;
+
+  .label-text {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 400;
+  }
+
   .input-icon-wrapper {
     position: relative;
     display: flex;

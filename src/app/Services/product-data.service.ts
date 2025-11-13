@@ -171,7 +171,7 @@ export class ProductDataService {
         });
 
         this.productQuery.updateProductRangeData( rangeData );
-        console.log('product data by date range', this.productQuery.products);
+        console.log('product data by date range from store', this.productQuery.products);
         return this.productQuery.products;
       })
     );

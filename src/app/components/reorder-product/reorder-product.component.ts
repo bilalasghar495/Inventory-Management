@@ -172,7 +172,7 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(({ startDate, endDate }) => {
       // Verify dates are still set (they might have been cleared)
-      if (this.startDate() === startDate && this.endDate() === endDate && startDate && endDate) {
+      if ( this.startDate() === startDate && this.endDate() === endDate && startDate && endDate ) {
         this.fetchProductsByDateRange();
       }
     });
