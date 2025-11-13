@@ -26,6 +26,9 @@ export class DatepickerComponent {
   // Internal date value for ngModel binding (Date object for ngx-bootstrap)
   internalDate: Date | null = null;
   
+  // Track if this is the first initialization
+  private isInitialized = false;
+  
   // Datepicker configuration
   readonly datepickerConfig: Partial<BsDatepickerConfig> = {
     containerClass: 'theme-default',
@@ -38,6 +41,7 @@ export class DatepickerComponent {
     // Sync external string value to internal Date object
     effect(() => {
       const val = this.value();
+      
       if ( val && typeof val === 'string' ) {
         const date = new Date(val);
         if ( !isNaN(date.getTime() )) {
@@ -45,13 +49,14 @@ export class DatepickerComponent {
         } else {
           this.internalDate = null;
         }
-      } else if (val === null || val === undefined || val === '') {
-        // If no value is provided, set to current date by default
-        if (this.internalDate === null) {
-          this.internalDate = new Date();
-          // Emit the current date
-          this.onDateChange(this.internalDate);
-        }
+      } else if ( ( val === null || val === undefined || val === '' ) && !this.isInitialized ) {
+        // If no value is provided on first load, set to current date by default and emit it
+        this.internalDate = new Date();
+        this.isInitialized = true;
+        
+        // Emit the default date so parent component has a value
+        const dateString = this.internalDate.toISOString().split('T')[0];
+        this.valueChange.emit( dateString );
       }
     });
   }

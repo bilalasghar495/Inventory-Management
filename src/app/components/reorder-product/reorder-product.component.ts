@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, OnDestroy, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -20,8 +20,8 @@ import { ProductQuery } from '../../stores/product.query';
 import { IProductDetailModel, IShopDataModel, IExportProductData } from '../../models/product.model';
 
 // RxJS
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil, switchMap } from 'rxjs/operators';
+import { Subject, EMPTY } from 'rxjs';
 
 // Enums
 import { ProductStatusEnum, UrgencyLevelEnum } from '../../shared/enums/enum';
@@ -34,6 +34,8 @@ import { ProductStatusEnum, UrgencyLevelEnum } from '../../shared/enums/enum';
   styleUrl: './reorder-product.component.scss'
 })
 export class ReorderProductComponent implements OnInit, OnDestroy {
+  @ViewChild('tableContainer', { static: false }) tableContainer!: ElementRef;
+
   readonly productDataService = inject( ProductDataService );
   readonly productQuery       = inject( ProductQuery );
   readonly toastService       = inject( ToastService );
@@ -65,6 +67,9 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
   // Date range signals
   readonly startDate = signal<string | null>(null);
   readonly endDate   = signal<string | null>(null);
+
+  // Track if dates are being initialized (to prevent API call on default dates)
+  private isInitialDateSetup = true;
 
   private readonly searchTermSubject = new Subject<string>();
   private readonly dateRangeSubject  = new Subject<{ startDate: string; endDate: string }>();
@@ -157,23 +162,65 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     // Effect to trigger date range API when both dates are set
     effect(() => {
       const startDate = this.startDate();
-      const endDate = this.endDate();
+      const endDate   = this.endDate();
       
       // Only trigger if both dates are set
-      if (startDate && endDate) {
+      if ( startDate && endDate ) {
+        // Skip API call on initial default dates
+        if ( this.isInitialDateSetup ) {
+          this.isInitialDateSetup = false;
+          return;
+        }
+        
         this.dateRangeSubject.next({ startDate, endDate });
       }
     });
 
-    // Debounce date range changes to prevent rapid API calls
+    // Debounce date range changes and use switchMap to cancel previous API calls
     this.dateRangeSubject.pipe(
       debounceTime(500),
       distinctUntilChanged((prev, curr) => prev.startDate === curr.startDate && prev.endDate === curr.endDate),
-      takeUntil(this.destroy$)
-    ).subscribe(({ startDate, endDate }) => {
-      // Verify dates are still set (they might have been cleared)
-      if ( this.startDate() === startDate && this.endDate() === endDate && startDate && endDate ) {
-        this.fetchProductsByDateRange();
+      switchMap( ({ startDate, endDate }) => {
+        // Verify dates are still set and valid
+        if ( this.startDate() !== startDate || this.endDate() !== endDate || !startDate || !endDate ) {
+          return EMPTY;
+        }
+
+        const storeUrl = this.userService.getStoreUrl();
+        if ( !storeUrl ) {
+          return EMPTY;
+        }
+
+        // Validate date order (startDate should be before endDate)
+        const startDateObj = new Date( startDate );
+        const endDateObj   = new Date( endDate );
+        
+        if (startDateObj > endDateObj) {
+          // Swap dates if they're in wrong order
+          this.startDate.set( endDate );
+          this.endDate.set( startDate );
+          return EMPTY; // Effect will trigger again with swapped dates
+        }
+
+        // Format dates as ISO datetime strings
+        const startDateObjFormatted = new Date( startDate + 'T00:00:00.000Z' );
+        const formattedStartDate = startDateObjFormatted.toISOString();
+        const formattedEndDate = endDate + 'T23:59:59';
+
+        // Set loading state to true
+        this.isDateRangeLoading.set(true);
+
+        // Return the API call observable - switchMap will cancel this if a new request comes in
+        return this.productDataService.getProductsByDateRange( storeUrl, formattedStartDate, formattedEndDate, this.futureDays(), this.status().toLowerCase() );
+      }),
+      takeUntil( this.destroy$ )
+    ).subscribe({
+      next: () => {
+        this.isDateRangeLoading.set( false );
+      },
+      error: () => {
+        this.isDateRangeLoading.set( false );
+        this.showError( 'Failed to fetch products for selected date range' );
       }
     });
   }
@@ -389,12 +436,22 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
 
   onPageChange( page: number ): void {
     this.currentPage.set( page );
+    
+    // Scroll to top of the table container when page changes
+    if ( this.tableContainer?.nativeElement ) {
+      this.tableContainer.nativeElement.scrollTop = 0;
+    }
   }
 
 
   onItemsPerPageChange( itemsPerPage: number ): void {
     this.itemsPerPage.set( itemsPerPage );
     this.currentPage.set(1);
+    
+    // Scroll to top of the table container when items per page changes
+    // if ( this.tableContainer?.nativeElement ) {
+    //   this.tableContainer.nativeElement.scrollTop = 0;
+    // }
   }
 
 
@@ -439,57 +496,4 @@ export class ReorderProductComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Fetch products by date range when dates are selected
-  private fetchProductsByDateRange(): void {
-    const storeUrl = this.userService.getStoreUrl();
-    if (!storeUrl) {
-      console.warn('Store URL not available, skipping date range API call');
-      return;
-    }
-
-    const startDateStr = this.startDate();
-    const endDateStr = this.endDate();
-
-    if ( !startDateStr || !endDateStr ) {
-      return;
-    }
-
-    // Validate date order (startDate should be before endDate)
-    const startDate = new Date(startDateStr);
-    const endDate = new Date(endDateStr);
-    
-    if ( startDate > endDate ) {
-      console.warn('Start date is after end date, swapping dates');
-      // Swap dates if they're in wrong order
-      const temp = startDateStr;
-      this.startDate.set(endDateStr);
-      this.endDate.set(temp);
-      return; // Effect will trigger again with swapped dates
-    }
-
-    // Format dates as ISO datetime strings with milliseconds (e.g., 2025-11-05T10:53:16.510Z)
-    // Start date: beginning of day in UTC (00:00:00.000Z)
-    const startDateObj = new Date(startDateStr + 'T00:00:00.000Z');
-    const formattedStartDate = startDateObj.toISOString();
-    
-    // End date: always use end of day (23:59:59)
-    const formattedEndDate = endDateStr + 'T23:59:59';
-
-    console.log('Triggering date range API with:', { storeUrl, startDateStr: formattedStartDate, endDateStr: formattedEndDate });
-
-    // Set loading state to true
-    this.isDateRangeLoading.set(true);
-
-    this.productDataService.getProductsByDateRange( storeUrl, formattedStartDate, formattedEndDate, this.futureDays(), this.status().toLowerCase() ).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (data) => {
-        console.log('Date range API response:', data);
-        this.isDateRangeLoading.set(false);
-      },
-      error: (error) => {
-        console.error('Date range API error:', error);
-        this.isDateRangeLoading.set(false);
-        this.showError('Failed to fetch products for selected date range');
-      }
-    });
-  }
 }
