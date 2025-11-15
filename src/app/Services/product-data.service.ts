@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map, Observable, of, pipe } from 'rxjs';
+import { forkJoin, map, Observable, of, pipe } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 // Models
@@ -13,6 +13,7 @@ import { UserService } from './user-service';
 // Akita Store
 import { ProductStore } from '../stores/product.store';
 import { ProductQuery } from '../stores/product.query';
+import { ProductCountResponse } from '../stores/product.state';
 
 @Injectable({
   providedIn: 'root'
@@ -26,9 +27,10 @@ export class ProductDataService {
   
   // API URLS
   readonly API_URLS = {
-    PRODUCTS        : `${this.baseApiUrl}/restock-prediction`,
-    PRODUCTS_BY_DATE: `${this.baseApiUrl}/restock-prediction/range`,
-    CSV_EXPORT      : `${this.baseApiUrl}/export/csv/specific-products`
+    PRODUCTS          : `${this.baseApiUrl}/restock-prediction`,
+    PRODUCTS_BY_DATE  : `${this.baseApiUrl}/restock-prediction/range`,
+    CSV_EXPORT        : `${this.baseApiUrl}/export/csv/specific-products`,
+    GET_TOTAL_PRODUCTS: `${this.baseApiUrl}/products/total`,
   };
 
   constructor( private http: HttpClient ) { }
@@ -117,13 +119,52 @@ export class ProductDataService {
   }
 
 
+  getTotalProducts( storeUrl: string, status: string | string[] = 'ACTIVE', forceRefresh: boolean = false ): Observable<number | ProductCountResponse | { active: number | ProductCountResponse; draft: number | ProductCountResponse }> {
+    // Check if we have valid cached data and it's for the same store and status
+    if ( !forceRefresh && this.productQuery.isTotalProductsCacheValid( storeUrl, status ) ) {
+      return of( this.productQuery.totalProducts! );
+    }
+
+    // If status is an array, fetch totals for all statuses in parallel and return separately
+    if ( Array.isArray(status) ) {
+      const activeRequest = this.http.get<number | ProductCountResponse>(`${this.API_URLS.GET_TOTAL_PRODUCTS}?store=${storeUrl}&status=ACTIVE`);
+      const draftRequest = this.http.get<number | ProductCountResponse>(`${this.API_URLS.GET_TOTAL_PRODUCTS}?store=${storeUrl}&status=DRAFT`);
+      
+      return forkJoin({
+        active: activeRequest,
+        draft: draftRequest
+      }).pipe( tap({
+          next: ( data: { active: number | ProductCountResponse; draft: number | ProductCountResponse } ) => {
+            this.productStore.update({ 
+              totalProducts: data, 
+              totalProductsCacheParams: { storeUrl, status } 
+            });
+          }
+        })
+      );
+    }
+    
+    // Single status - original behavior
+    return this.http.get<number | ProductCountResponse>(`${this.API_URLS.GET_TOTAL_PRODUCTS}?store=${storeUrl}&status=${status}`).pipe(
+      tap({
+        next: ( data: number | ProductCountResponse ) => {
+          this.productStore.update({ 
+            totalProducts: data, 
+            totalProductsCacheParams: { storeUrl, status } 
+          });
+        }
+      })
+    );
+  }
+
+
   refreshProducts( rangeDays1: number = 7, rangeDays2: number = 30, futureDays: string = '15', status: string = 'ACTIVE' ): Observable<IProductDetailModel[]> {
     return this.getProducts( rangeDays1, rangeDays2, futureDays, status, true );
   }
 
 
   clearCache(): void {
-    this.productStore.update({ products: [], cacheParams: null });
+    this.productStore.update({ products: [], cacheParams: null, totalProducts: null, totalProductsCacheParams: null });
   }
 
 
